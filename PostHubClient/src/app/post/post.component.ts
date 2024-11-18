@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { faDownLong, faEllipsis, faImage, faMessage, faUpLong, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { Post } from '../models/post';
 import { PostService } from '../services/post.service';
@@ -39,6 +39,8 @@ export class PostComponent {
 
   constructor(public postService : PostService, public route : ActivatedRoute, public router : Router, public commentService : CommentService) { }
 
+  @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
+
   async ngOnInit() {
     let postId : string | null = this.route.snapshot.paramMap.get("postId");
 
@@ -62,7 +64,18 @@ export class PostComponent {
       alert("Écris un commentaire niochon");
       return;
     }
+    if(this.myPicture == null) return;
 
+    let file = this.myPicture.nativeElement.files[0];
+    if(file == null) return;
+
+    let formData = new FormData();
+    let count = 0;
+    while(file != null){
+      formData.append("image" + count, file);
+      count++;
+      file = this.myPicture.nativeElement.files[count];
+    }
     let commentDTO = {
       text : this.newComment
     }
