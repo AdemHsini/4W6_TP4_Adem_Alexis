@@ -1,11 +1,15 @@
 
-import { Component, Input } from '@angular/core';
+import { Component, ElementRef, Input, ViewChild } from '@angular/core';
 import { faDownLong, faEllipsis, faImage, faL, faMessage, faUpLong, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { CommentService } from '../services/comment.service';
 import { Comment } from '../models/comment';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { lastValueFrom } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+
+const domain = "https://localhost:7216/";
 
 @Component({
   selector: 'app-comment',
@@ -38,11 +42,15 @@ export class CommentComponent {
   newComment : string = "";
   editedText ?: string;
 
-  constructor(public commentService : CommentService) { }
+  pictureIds : number[] = [];
+  @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
 
-  ngOnInit() {
+  constructor(public commentService : CommentService, public http : HttpClient) { }
+
+  async ngOnInit() {
     this.isAuthor = localStorage.getItem("username") == this.comment?.username;
     this.editedText = this.comment?.text;
+    this.pictureIds = await this.commentService.getPictureIds();
   }
 
   // Créer un nouveau sous-commentaire au commentaire affiché dans ce composant
@@ -57,11 +65,20 @@ export class CommentComponent {
     if(this.comment == null) return;
     if(this.comment.subComments == null) this.comment.subComments = [];
 
-    let commentDTO = {
-      text : this.newComment
+    if(this.myPicture == null) return;
+    let file = this.myPicture.nativeElement.files[0];
+    if(file == null) return;
+
+    let formData = new FormData();
+    let count = 0;
+    while(file != null){
+      formData.append("image" + count, file);
+      formData.append("text", this.newComment)
+      count++;
+      file = this.myPicture.nativeElement.files[count];
     }
 
-    this.comment.subComments.push(await this.commentService.postComment(commentDTO, this.comment.id));
+    this.comment.subComments.push(await this.commentService.postComment(formData, this.comment.id));
     
     this.replyToggle = false;
     this.repliesToggle = true;
