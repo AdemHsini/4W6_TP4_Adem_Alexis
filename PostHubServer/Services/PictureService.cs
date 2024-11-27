@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http.HttpResults;
 using PostHubServer.Data;
 using PostHubServer.Models;
 using System.Text.RegularExpressions;
+using PostHubServer.Models;
 
 namespace PostHubServer.Services
 {
@@ -14,6 +16,13 @@ namespace PostHubServer.Services
         public PictureService(PostHubContext context)
         {
             _context = context;
+        }
+
+        public async Task<Picture?> GetPictureId(int id)
+        {
+            if(_context.Pictures == null) return null;
+
+            return await _context.Pictures.FindAsync(id);
         }
 
         private bool IsContextNull() => _context == null || _context.Pictures == null;
@@ -31,13 +40,6 @@ namespace PostHubServer.Services
             _context.Pictures.Add(p);
             await _context.SaveChangesAsync();
             return p;
-        }
-
-        public async Task<Picture?> GetPictureId(int id)
-        {
-            Picture? picture = await _context.Pictures.FindAsync(id);
-
-            return picture;
         }
     }
 }

@@ -29,7 +29,10 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/imagesloaded/imagesloaded.pkgd.min.js",
+              "node_modules/masonry-layout/dist/masonry.pkgd.min.js"
+            ]
           },
           "configurations": {
             "production": {

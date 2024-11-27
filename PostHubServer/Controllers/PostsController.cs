@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using PostHubServer.Models;
 using PostHubServer.Models.DTOs;
 using PostHubServer.Services;
 using SixLabors.ImageSharp;
 using System.Security.Claims;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace PostHubServer.Controllers
 {
@@ -33,24 +35,60 @@ namespace PostHubServer.Controllers
         // et le post lui-même.
         [HttpPost("{hubId}")]
         [Authorize]
-        public async Task<ActionResult<PostDisplayDTO>> PostPost(int hubId, PostDTO postDTO)
+        [DisableRequestSizeLimit]
+        public async Task<ActionResult<PostDisplayDTO>> PostPost(int hubId)
         {
-            User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            if (user == null) return Unauthorized();
+            try
+            {
+                IFormCollection formCollection = await Request.ReadFormAsync();
 
-            Hub? hub = await _hubService.GetHub(hubId);
-            if (hub == null) return NotFound();
+                int i = 0;
+                List<Picture> pictures = new List<Picture>();
+                while (i < formCollection.Files.Count)
+                {
+                    IFormFile file = formCollection.Files.GetFile("image" + i);
+                    if (file != null)
+                    {
+                        Picture picture = new Picture();
+                        SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(file.OpenReadStream());
 
-            Comment? mainComment = await _commentService.CreateCommentPost(user, postDTO.Text, null);
-            if (mainComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
+                        picture.FileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        picture.MimeType = file.ContentType;
 
-            Post? post = await _postService.CreatePost(postDTO.Title, hub, mainComment);
-            if (post == null) return StatusCode(StatusCodes.Status500InternalServerError);
+                        image.Save(Directory.GetCurrentDirectory() + "/images/full/" + picture.FileName);   
+                        
+                        pictures.Add(picture);
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "Aucune image fournie" });
+                    }
+                    i++;
+                }
+            
 
-            bool voteToggleSuccess = await _commentService.UpvoteComment(mainComment.Id, user);
-            if (!voteToggleSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
+                User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+                if (user == null) return Unauthorized();
 
-            return Ok(new PostDisplayDTO(post, true, user));
+                Hub? hub = await _hubService.GetHub(hubId);
+                if (hub == null) return NotFound();
+
+                Comment? mainComment = await _commentService.CreateComment(user, formCollection["text"], null, pictures);
+                if (mainComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
+
+                Post? post = await _postService.CreatePost(formCollection["title"], hub, mainComment);
+                if (post == null) return StatusCode(StatusCodes.Status500InternalServerError);
+
+                bool voteToggleSuccess = await _commentService.UpvoteComment(mainComment.Id, user);
+                if (!voteToggleSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
+
+                return Ok(new PostDisplayDTO(post, true, user));
+
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         /// <summary>

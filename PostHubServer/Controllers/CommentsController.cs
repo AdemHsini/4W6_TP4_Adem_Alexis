@@ -8,6 +8,8 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace PostHubServer.Controllers
 {
@@ -77,7 +79,7 @@ namespace PostHubServer.Controllers
 
             return Ok(new CommentDisplayDTO(newComment, false, user));
         }
-        
+
         // Modifier le texte d'un commentaire
         [HttpPut("{commentId}")]
         [Authorize]
@@ -174,6 +176,21 @@ namespace PostHubServer.Controllers
             } while (comment != null && comment.User == null && comment.GetSubCommentTotal() == 0);
 
             return Ok(new { Message = "Commentaire supprimé." });
+        }
+
+        [HttpGet("{size}/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Picture>> GetPicture(string size, int id)
+        {
+            Picture? picture = await _pictureService.GetPictureId(id);
+            if (picture == null || picture.FileName == null || picture.MimeType == null) return NotFound(new { Message = "Le picture n'existe pas." });
+
+            if (!(Regex.Match(size, "avatar|full|thumbnail").Success))
+            {
+                return BadRequest(new { Message = "La taille demandée n'est pas valide." });
+            }
+            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/" + size + "/" + picture.FileName);
+            return File(bytes, picture.MimeType);
         }
 
         [HttpGet("{id}")]
