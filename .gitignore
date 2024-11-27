@@ -396,3 +396,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/PostHubServer/images/full
+/PostHubClient/.angular/cache/18.2.11/postHubClient/.tsbuildinfo
