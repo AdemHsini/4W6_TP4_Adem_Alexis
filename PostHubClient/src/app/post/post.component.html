@@ -31,7 +31,7 @@
     <textarea id="commentTextEdit" *ngIf="toggleMainCommentEdit" type="text"
       [(ngModel)]="newMainCommentText"></textarea>
     <div class="grid" #masongrid>
-      <div class="grid-item" #masongriditems *ngFor="let p of post.mainComment?.pictures">
+      <div class="grid-item" #masongriditems *ngFor="let p of post.mainComment?.picturesIds">
         <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" />
       </div>
     </div>
@@ -72,7 +72,7 @@
   <div id="commentBox">
     <input type="text" name="newComment" id="newComment" placeholder="Ajouter un commentaire" [(ngModel)]="newComment">
     <div *ngIf="displayInputFile" class="commentPictureAdd">
-      <input type="file" accept="images/*" name="commentPictures">
+      <input type="file" accept="images/*" name="commentPictures" #photo multiple>
     </div>
     <button (click)="displayInputFile = !displayInputFile"><fa-icon [icon]="faImage"></fa-icon></button>
     <button (click)="createComment()">Ajouter</button>

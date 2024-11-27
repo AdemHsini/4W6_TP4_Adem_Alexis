@@ -12,8 +12,8 @@ using PostHubServer.Data;
 namespace PostHubServer.Migrations
 {
     [DbContext(typeof(PostHubContext))]
-    [Migration("20241127051312_PostPostMigration")]
-    partial class PostPostMigration
+    [Migration("20241127220141_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

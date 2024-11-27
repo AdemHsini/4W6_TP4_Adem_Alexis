@@ -46,9 +46,6 @@ export class PostComponent {
   
   constructor(public postService : PostService, public route : ActivatedRoute, public router : Router, public commentService : CommentService) { }
 
-
-  constructor(public postService: PostService, public route: ActivatedRoute, public router: Router, public commentService: CommentService) { }
-
   async ngOnInit() {
     let postId: string | null = this.route.snapshot.paramMap.get("postId");
 
