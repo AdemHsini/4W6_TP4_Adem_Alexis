@@ -66,21 +66,24 @@ export class CommentComponent {
     if(this.comment == null) return;
     if(this.comment.subComments == null) this.comment.subComments = [];
 
-    if(this.myPicture == null) return;
-    let file = this.myPicture.nativeElement.files[0];
-    if(file == null) return;
-
     let formData = new FormData();
-    let count = 0;
-    while(file != null){
-      formData.append("image" + count, file);
-      formData.append("text", this.newComment)
-      count++;
-      file = this.myPicture.nativeElement.files[count];
+    formData.append("text", this.newComment)
+    
+    if(this.myPicture != null) {
+
+      let file = this.myPicture.nativeElement.files[0];
+      if(file == null) return;
+
+      let count = 0;
+      while(file != null){
+        formData.append("image" + count, file);
+        count++;
+        file = this.myPicture.nativeElement.files[count];
+      }
     }
 
     this.comment.subComments.push(await this.commentService.postComment(formData, this.comment.id));
-    
+
     this.replyToggle = false;
     this.repliesToggle = true;
     this.newComment = "";

@@ -64,18 +64,20 @@ export class PostComponent {
       alert("Écris un commentaire niochon");
       return;
     }
-    if(this.myPicture == null) return;
-
-    let file = this.myPicture.nativeElement.files[0];
-    if(file == null) return;
-
     let formData = new FormData();
-    let count = 0;
-    while(file != null){
-      formData.append("image" + count, file);
-      formData.append("text", this.newComment)
-      count++;
-      file = this.myPicture.nativeElement.files[count];
+    formData.append("text", this.newComment)
+
+    if(this.myPicture != null) {
+
+      let file = this.myPicture.nativeElement.files[0];
+      if(file == null) return;
+
+      let count = 0;
+      while(file != null){
+        formData.append("image" + count, file);
+        count++;
+        file = this.myPicture.nativeElement.files[count];
+      }
     }
 
     this.post?.mainComment?.subComments?.push(await this.commentService.postComment(formData, this.post.mainComment.id));
