@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using PostHubServer.Models;
 using PostHubServer.Models.DTOs;
 using PostHubServer.Services;
+using SixLabors.ImageSharp;
 using System.Security.Claims;
 
 namespace PostHubServer.Controllers
@@ -17,13 +18,15 @@ namespace PostHubServer.Controllers
         private readonly HubService _hubService;
         private readonly PostService _postService;
         private readonly CommentService _commentService;
+        private readonly PictureService _pictureService;
 
-        public PostsController(UserManager<User> userManager, HubService hubService, PostService postService, CommentService commentService)
+        public PostsController(UserManager<User> userManager, HubService hubService, PostService postService, CommentService commentService, PictureService pictureService)
         {
             _userManager = userManager;
             _hubService = hubService;
             _postService = postService;
             _commentService = commentService;
+            _pictureService = pictureService;
         }
 
         // Créer un nouveau Post. Cela crée en fait un nouveau commentaire (le commentaire principal du post)
@@ -38,7 +41,33 @@ namespace PostHubServer.Controllers
             Hub? hub = await _hubService.GetHub(hubId);
             if (hub == null) return NotFound();
 
-            Comment? mainComment = await _commentService.CreateComment(user, postDTO.Text, null);
+            //IFormCollection formCollection = await Request.ReadFormAsync();
+            //int count = 0;
+            //IFormFile? file = formCollection.Files.GetFile("image" + count);
+            //List<Picture> pictureList = new List<Picture>();
+
+            //while (file != null)
+            //{
+            //    Image image = Image.Load(file.OpenReadStream());
+
+            //    Picture p = new Picture
+            //    {
+            //        Id = 0,
+            //        FileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+            //        MimeType = file.ContentType
+            //    };
+
+            //    image.Save(Directory.GetCurrentDirectory() + "/images/thumbnail/" + p.FileName);
+
+            //    await _pictureService.AddPicture(p);
+
+            //    pictureList.Add(p);
+
+            //    count++;
+            //    file = formCollection.Files.GetFile("image" + count);
+            //}
+
+            Comment? mainComment = await _commentService.CreateComment(user, postDTO.Text, null, null);
             if (mainComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
             Post? post = await _postService.CreatePost(postDTO.Title, hub, mainComment);

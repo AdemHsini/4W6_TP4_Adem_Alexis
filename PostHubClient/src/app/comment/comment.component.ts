@@ -50,7 +50,8 @@ export class CommentComponent {
   async ngOnInit() {
     this.isAuthor = localStorage.getItem("username") == this.comment?.username;
     this.editedText = this.comment?.text;
-    this.pictureIds = await this.commentService.getPictureIds();
+    if(this.comment != null)
+    this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
   }
 
   // Créer un nouveau sous-commentaire au commentaire affiché dans ce composant

@@ -46,6 +46,7 @@ namespace PostHubServer.Controllers
             IFormCollection formCollection = await Request.ReadFormAsync();
             int count = 0;
             IFormFile? file = formCollection.Files.GetFile("image" + count);
+            List<Picture> pictureList = new List<Picture>();
 
             while (file != null)
             {
@@ -62,11 +63,13 @@ namespace PostHubServer.Controllers
 
                 await _pictureService.AddPicture(p);
                 
+                pictureList.Add(p);
+
                 count++;
                 file = formCollection.Files.GetFile("image" + count);
             }
 
-            Comment? newComment = await _commentService.CreateComment(user, comment, parentComment);
+            Comment? newComment = await _commentService.CreateComment(user, comment, parentComment, pictureList);
             if (newComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
             bool voteToggleSuccess = await _commentService.UpvoteComment(newComment.Id, user);
@@ -173,10 +176,10 @@ namespace PostHubServer.Controllers
             return Ok(new { Message = "Commentaire supprimé." });
         }
 
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<int>>> GetCommentPictureIds()
+        [HttpGet("{id}")]
+        public async Task<ActionResult<IEnumerable<int>>> GetCommentPictureIds(int id)
         {
-            return await _pictureService.GetPictureIds();
+            return await _pictureService.GetPictureIds(id);
         }
 
         [HttpGet("{id}")]

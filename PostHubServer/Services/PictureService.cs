@@ -18,9 +18,12 @@ namespace PostHubServer.Services
 
         private bool IsContextNull() => _context == null || _context.Pictures == null;
 
-        public async Task<ActionResult<IEnumerable<int>>> GetPictureIds()
+        public async Task<ActionResult<IEnumerable<int>>> GetPictureIds(int commentId)
         {
-            return await _context.Pictures.Select(p => p.Id).ToListAsync();
+            return await _context.Comments.Where(c => c.Id == commentId)
+                .SelectMany(c => c.Pictures)
+                .Select(p => p.Id)
+                .ToListAsync();
         }
 
         public async Task<ActionResult<Picture?>> AddPicture(Picture p)
