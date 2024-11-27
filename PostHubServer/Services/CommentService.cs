@@ -42,6 +42,24 @@ namespace PostHubServer.Services
             return newComment;
         }
 
+        public async Task<Comment?> CreateCommentPost(User user, string text, Comment? parentComment)
+        {
+            if (IsContextNull()) return null;
+
+            Comment newComment = new Comment()
+            {
+                Id = 0,
+                Text = text,
+                Date = DateTime.UtcNow,
+                User = user, // Auteur
+                ParentComment = parentComment, // null si commentaire principal du post
+            };
+
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+
+            return newComment;
+        }
         // Modifier le texte d'un commentaire
         public async Task<Comment?> EditComment(Comment comment, string text)
         {

@@ -41,33 +41,7 @@ namespace PostHubServer.Controllers
             Hub? hub = await _hubService.GetHub(hubId);
             if (hub == null) return NotFound();
 
-            //IFormCollection formCollection = await Request.ReadFormAsync();
-            //int count = 0;
-            //IFormFile? file = formCollection.Files.GetFile("image" + count);
-            //List<Picture> pictureList = new List<Picture>();
-
-            //while (file != null)
-            //{
-            //    Image image = Image.Load(file.OpenReadStream());
-
-            //    Picture p = new Picture
-            //    {
-            //        Id = 0,
-            //        FileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
-            //        MimeType = file.ContentType
-            //    };
-
-            //    image.Save(Directory.GetCurrentDirectory() + "/images/thumbnail/" + p.FileName);
-
-            //    await _pictureService.AddPicture(p);
-
-            //    pictureList.Add(p);
-
-            //    count++;
-            //    file = formCollection.Files.GetFile("image" + count);
-            //}
-
-            Comment? mainComment = await _commentService.CreateComment(user, postDTO.Text, null, null);
+            Comment? mainComment = await _commentService.CreateCommentPost(user, postDTO.Text, null);
             if (mainComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
             Post? post = await _postService.CreatePost(postDTO.Title, hub, mainComment);
