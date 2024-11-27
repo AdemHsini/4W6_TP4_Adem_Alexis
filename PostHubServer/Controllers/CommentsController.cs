@@ -6,6 +6,8 @@ using PostHubServer.Models.DTOs;
 using PostHubServer.Models;
 using PostHubServer.Services;
 using System.Security.Claims;
+using Microsoft.EntityFrameworkCore;
+using System.Text.RegularExpressions;
 
 namespace PostHubServer.Controllers
 {
@@ -16,12 +18,14 @@ namespace PostHubServer.Controllers
         private readonly UserManager<User> _userManager;
         private readonly PostService _postService;
         private readonly CommentService _commentService;
+        private readonly PictureService _pictureService;
 
-        public CommentsController(UserManager<User> userManager, PostService postService, CommentService commentService)
+        public CommentsController(UserManager<User> userManager, PostService postService, CommentService commentService, PictureService pictureService)
         {
             _userManager = userManager;
             _postService = postService;
             _commentService = commentService;
+            _pictureService = pictureService;
         }
 
         // Créer un nouveau commentaire. (Ne permet pas de créer le commentaire principal d'un post, pour cela,
@@ -36,7 +40,7 @@ namespace PostHubServer.Controllers
             Comment? parentComment = await _commentService.GetComment(parentCommentId);
             if (parentComment == null || parentComment.User == null) return BadRequest();
 
-            Comment? newComment = await _commentService.CreateComment(user, commentDTO.Text, parentComment);
+            Comment? newComment = await _commentService.CreateComment(user, commentDTO.Text, parentComment, new List<Picture>());
             if (newComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
             bool voteToggleSuccess = await _commentService.UpvoteComment(newComment.Id, user);
@@ -44,7 +48,7 @@ namespace PostHubServer.Controllers
 
             return Ok(new CommentDisplayDTO(newComment, false, user));
         }
-        
+
         // Modifier le texte d'un commentaire
         [HttpPut("{commentId}")]
         [Authorize]
@@ -141,6 +145,21 @@ namespace PostHubServer.Controllers
             } while (comment != null && comment.User == null && comment.GetSubCommentTotal() == 0);
 
             return Ok(new { Message = "Commentaire supprimé." });
+        }
+
+        [HttpGet("{size}/{id}")]
+        [AllowAnonymous]
+        public async Task<ActionResult<Picture>> GetPicture(string size, int id)
+        {
+            Picture? picture = await _pictureService.GetPictureId(id);
+            if (picture == null || picture.FileName == null || picture.MimeType == null) return NotFound(new { Message = "Le picture n'existe pas." });
+
+            if (!(Regex.Match(size, "avatar|full|thumbnail").Success))
+            {
+                return BadRequest(new { Message = "La taille demandée n'est pas valide." });
+            }
+            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/" + size + "/" + picture.FileName);
+            return File(bytes, picture.MimeType);
         }
     }
 }
