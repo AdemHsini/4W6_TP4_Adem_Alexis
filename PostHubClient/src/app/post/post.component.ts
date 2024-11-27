@@ -37,9 +37,9 @@ export class PostComponent {
   faImage = faImage;
   faXmark = faXmark;
 
-  constructor(public postService : PostService, public route : ActivatedRoute, public router : Router, public commentService : CommentService) { }
-
   @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
+  
+  constructor(public postService : PostService, public route : ActivatedRoute, public router : Router, public commentService : CommentService) { }
 
   async ngOnInit() {
     let postId : string | null = this.route.snapshot.paramMap.get("postId");
@@ -73,14 +73,12 @@ export class PostComponent {
     let count = 0;
     while(file != null){
       formData.append("image" + count, file);
+      formData.append("text", this.newComment)
       count++;
       file = this.myPicture.nativeElement.files[count];
     }
-    let commentDTO = {
-      text : this.newComment
-    }
 
-    this.post?.mainComment?.subComments?.push(await this.commentService.postComment(commentDTO, this.post.mainComment.id));
+    this.post?.mainComment?.subComments?.push(await this.commentService.postComment(formData, this.post.mainComment.id));
 
     this.newComment = "";
   }
