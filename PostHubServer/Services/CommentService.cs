@@ -22,7 +22,27 @@ namespace PostHubServer.Services
 
         // Créer un commentaire (possiblement le commentaire principal d'un post, mais pas forcément)
         // Un commentaire parent peut être fourni si le commentaire créé est un sous-commentaire
-        public async Task<Comment?> CreateComment(User user, string text, Comment? parentComment)
+        public async Task<Comment?> CreateComment(User user, string text, Comment? parentComment, List<Picture>? pictures)
+        {
+            if (IsContextNull()) return null;
+
+            Comment newComment = new Comment()
+            {
+                Id = 0,
+                Text = text,
+                Date = DateTime.UtcNow,
+                User = user, // Auteur
+                ParentComment = parentComment, // null si commentaire principal du post
+                Pictures = pictures
+            };
+
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+
+            return newComment;
+        }
+
+        public async Task<Comment?> CreateCommentPost(User user, string text, Comment? parentComment)
         {
             if (IsContextNull()) return null;
 
@@ -40,7 +60,6 @@ namespace PostHubServer.Services
 
             return newComment;
         }
-
         // Modifier le texte d'un commentaire
         public async Task<Comment?> EditComment(Comment comment, string text)
         {

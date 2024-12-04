@@ -50,4 +50,11 @@ export class CommentService {
     console.log(x);
   }
 
+  async getPictureIds(commentId : number) : Promise<number[]>{
+
+    let x = await lastValueFrom(this.http.get<number[]>(domain + "api/Comments/GetCommentPictureIds/" + commentId));
+    console.log(x);
+    return x;
+
+  }
 }
