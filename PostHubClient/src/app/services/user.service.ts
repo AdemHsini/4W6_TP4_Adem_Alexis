@@ -42,4 +42,11 @@ export class UserService {
     localStorage.setItem("username", x.username);
   }
 
+  async update(dto : any, userName : string) : Promise<Comment>{
+
+    let x = await lastValueFrom(this.http.put<any>(domain + "api/Users/Update/" + userName, dto));
+    console.log(x);
+    return x;
+
+  }
 }

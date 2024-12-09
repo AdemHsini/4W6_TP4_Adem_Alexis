@@ -41,6 +41,7 @@ export class CommentComponent {
   // Variables associées à des inputs
   newComment : string = "";
   editedText ?: string;
+  username : string | null = null;
 
   pictureIds : number[] = [];
   @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
@@ -52,6 +53,7 @@ export class CommentComponent {
     this.editedText = this.comment?.text;
     if(this.comment != null)
     this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
+    this.username = localStorage.getItem("username");
   }
 
   // Créer un nouveau sous-commentaire au commentaire affiché dans ce composant

@@ -36,31 +36,12 @@ export class ProfileComponent {
 
     if(this.myPicture != null) {
       let file = this.myPicture.nativeElement.files[0];
-      if(file == null) return;
-  
-      let count = 0;
-      while(file != null){
-        formData.append("image" + count, file);
-        count++;
-        file = this.myPicture.nativeElement.files[count];
-      }
+      formData.append("image", file);
     }
 
-    await this.userService;
-  }
+    if (this.username != null)
+    await this.userService.update(formData, this.username);
 
-  onFileSelected(event: any): void {
-    const file: File = event.target.files[0]; // Récupère le premier fichier sélectionné
-    if (file) {
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        // Convertir l'image en Data URL et mettre à jour l'URL de l'image
-        this.imageUrl = reader.result as string;
-      };
-
-      // Lire le fichier comme Data URL
-      reader.readAsDataURL(file);
-    }
+    window.location.reload()
   }
 }

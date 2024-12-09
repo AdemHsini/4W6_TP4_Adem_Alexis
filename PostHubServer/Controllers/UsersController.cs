@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using PostHubServer.Models;
 using PostHubServer.Models.DTOs;
+using PostHubServer.Services;
+using SixLabors.ImageSharp;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -77,6 +79,61 @@ namespace PostHubServer.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest,
                     new { Message = "Le nom d'utilisateur ou le mot de passe est invalide." });
             }
+        }
+
+        [HttpPut("{name}")]
+        public async Task<ActionResult> Update(string name)
+        {
+            User? user = await _userManager.FindByNameAsync(name);
+            if (user != null)
+            {
+                IFormCollection formCollection = await Request.ReadFormAsync();
+                IFormFile? file = formCollection.Files.GetFile("image");
+
+                if (file != null)
+                {
+                    Image image = Image.Load(file.OpenReadStream());
+
+                    Picture p = new Picture
+                    {
+                        Id = 0,
+                        FileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName),
+                        MimeType = file.ContentType
+                    };
+
+                    image.Save(Directory.GetCurrentDirectory() + "/images/avatar/" + p.FileName);
+
+                    user.FileName = p.FileName;
+
+                    user.MimeType = file.ContentType;
+
+                    await _userManager.UpdateAsync(user);
+                }
+
+            }
+            return Ok();
+        }
+
+        [HttpGet("{name}")]
+        public async Task<ActionResult<IEnumerable<int>>> GetUserPicture(string name)
+        {
+            User? user = await _userManager.FindByNameAsync(name);
+            
+            if (user != null)
+            {
+                if (user.FileName == null)
+                {
+                    byte[] bytesDefault = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/avatar/default.png");
+                    return File(bytesDefault, "image/png");
+                }
+                if (user.MimeType != null)
+                {
+                    byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/avatar/" + user.FileName);
+                    return File(bytes, user.MimeType);
+                }
+            }
+            return StatusCode(StatusCodes.Status404NotFound,
+                    new { Message = "Le nom d'utilisateur introuvable." });
         }
     }
 }

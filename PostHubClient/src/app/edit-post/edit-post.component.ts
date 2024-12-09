@@ -44,10 +44,6 @@ export class EditPostComponent {
       return;
     }
     let files = this.myPicture.nativeElement.files;
-    if (files.length == 0) {
-      console.log("Aucun fichier")
-      return;
-    }
 
     let formData = new FormData()
 
