@@ -61,9 +61,10 @@ namespace PostHubServer.Services
             return newComment;
         }
         // Modifier le texte d'un commentaire
-        public async Task<Comment?> EditComment(Comment comment, string text)
+        public async Task<Comment?> EditComment(Comment comment, string text, List<Picture> pictures)
         {
             comment.Text = text;
+            comment.Pictures = pictures;
             await _context.SaveChangesAsync();
 
             return comment;

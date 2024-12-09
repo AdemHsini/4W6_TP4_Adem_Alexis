@@ -45,6 +45,7 @@ export class PostComponent {
   @ViewChildren('masongriditems') masongriditems?: QueryList<any>;
   @ViewChild("photo", { static: false }) myPicture?: ElementRef;
   @ViewChildren('glideitems') glideitems?: QueryList<any> = new QueryList();
+  @ViewChild("myPictureViewChildPost", { static: false }) myPictureModifPost?: ElementRef;
 
   constructor(public postService: PostService, public route: ActivatedRoute, public router: Router, public commentService: CommentService) { }
 
@@ -130,11 +131,26 @@ export class PostComponent {
   async editMainComment() {
     if (this.post == null || this.post.mainComment == null) return;
 
-    let commentDTO = {
-      text: this.newMainCommentText
+
+    if (this.myPictureModifPost == undefined) {
+      console.log("Input HTML non chargé")
+      return;
+    }
+    let files = this.myPictureModifPost.nativeElement.files;
+    if (files.length == 0) {
+      console.log("Aucun fichier")
+      return;
     }
 
-    let newMainComment = await this.commentService.editComment(commentDTO, this.post?.mainComment.id);
+    let formData = new FormData();
+    formData.append("textEdited", this.newMainCommentText);
+    let i = 0
+    while (i < files.length) {
+      formData.append("image" + i, files[i], files[i].name)
+      i++;
+    }
+
+    let newMainComment = await this.commentService.editComment(formData, this.post?.mainComment.id);
     this.post.mainComment = newMainComment;
     this.toggleMainCommentEdit = false;
   }
@@ -181,7 +197,7 @@ export class PostComponent {
     var glide = new Glide('.glide', {
       type: 'carousel',
       focusAt: 'center',
-      perView: Math.ceil(window.innerWidth / 400)
+      perView: Math.ceil(window.innerWidth / 700)
     });
     glide.mount();
   }
