@@ -61,7 +61,7 @@ namespace PostHubServer.Controllers
                     MimeType = file.ContentType
                 };
 
-                image.Save(Directory.GetCurrentDirectory() + "/images/thumbnail/" + p.FileName);
+                image.Save(Directory.GetCurrentDirectory() + "/images/full/" + p.FileName);
 
                 await _pictureService.AddPicture(p);
                 
@@ -83,19 +83,54 @@ namespace PostHubServer.Controllers
         // Modifier le texte d'un commentaire
         [HttpPut("{commentId}")]
         [Authorize]
-        public async Task<ActionResult<CommentDisplayDTO>> PutComment(int commentId, CommentDTO commentDTO)
+        [DisableRequestSizeLimit]
+        public async Task<ActionResult<CommentDisplayDTO>> PutComment(int commentId)
         {
-            User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
 
-            Comment? comment = await _commentService.GetComment(commentId);
-            if (comment == null) return NotFound();
+            try
+            {
+                IFormCollection formCollection = await Request.ReadFormAsync();
 
-            if (user == null || comment.User != user) return Unauthorized();
+                int i = 0;
+                List<Picture> pictures = new List<Picture>();
+                while (i < formCollection.Files.Count)
+                {
+                    IFormFile file = formCollection.Files.GetFile("image" + i);
+                    if (file != null)
+                    {
+                        Picture picture = new Picture();
+                        SixLabors.ImageSharp.Image image = SixLabors.ImageSharp.Image.Load(file.OpenReadStream());
 
-            Comment? editedComment = await _commentService.EditComment(comment, commentDTO.Text);
-            if (editedComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
+                        picture.FileName = Guid.NewGuid().ToString() + Path.GetExtension(file.FileName);
+                        picture.MimeType = file.ContentType;
 
-            return Ok(new CommentDisplayDTO(editedComment, true, user));
+                        image.Save(Directory.GetCurrentDirectory() + "/images/full/" + picture.FileName);
+
+                        pictures.Add(picture);
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "Aucune image fournie" });
+                    }
+                    i++;
+                }
+
+                User? user = await _userManager.FindByIdAsync(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+                Comment? comment = await _commentService.GetComment(commentId);
+                if (comment == null) return NotFound();
+
+                if (user == null || comment.User != user) return Unauthorized();
+
+                Comment? editedComment = await _commentService.EditComment(comment, formCollection["textEdit"], pictures);
+                if (editedComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
+
+                return Ok(new CommentDisplayDTO(editedComment, true, user));
+            }
+            catch (Exception)
+            {
+                throw;
+            }
         }
 
         // Upvoter (ou annuler l'upvote) un commentaire
@@ -204,7 +239,7 @@ namespace PostHubServer.Controllers
         {
             Picture? picture = await _pictureService.GetPictureId(id);
 
-            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/thumbnail/" + picture.FileName);
+            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/" + picture.FileName);
             return File(bytes, picture.MimeType);
         }
     }

@@ -1,4 +1,3 @@
-
 <!-- Affichage du commentaire (oui c'est gros et laid) -->
 <div class="post" *ngIf="comment != null">
 
@@ -12,7 +11,7 @@
     <!-- Texte du commentaire et éventuellement images -->
     <div class="postContent">
       <div style="flex:1; display:flex; align-items:center;">
-        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
+        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetPicture/full/' + username" alt="Avatar">
         <div *ngIf="!editToggle">{{comment.text}}</div>
         <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
           [(ngModel)]="editedText">{{comment.text}}</textarea>
@@ -49,7 +48,7 @@
       </div>
       <div>
         <!-- Il faudra modifier cet input -->
-        <input *ngIf="editToggle" type="file" accept="images/*" name="editedCommentPictures" #photo multiple>
+        <input *ngIf="editToggle" type="file" accept="images/*" name="editedCommentPictures" #photoEdit multiple>
       </div>
       <div>
         <button *ngIf="editToggle" (click)="editToggle = false">Annuler</button>

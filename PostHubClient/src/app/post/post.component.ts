@@ -8,6 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { CommentComponent } from '../comment/comment.component';
+import Glide from '@glidejs/glide';
 
 declare var Masonry: any;
 declare var imagesLoaded: any;
@@ -42,9 +43,11 @@ export class PostComponent {
 
   @ViewChild('masongrid') masongrid?: ElementRef;
   @ViewChildren('masongriditems') masongriditems?: QueryList<any>;
-  @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
-  
-  constructor(public postService : PostService, public route : ActivatedRoute, public router : Router, public commentService : CommentService) { }
+  @ViewChild("photo", { static: false }) myPicture?: ElementRef;
+  @ViewChildren('glideitems') glideitems?: QueryList<any> = new QueryList();
+  @ViewChild("myPictureViewChildPost", { static: false }) myPictureModifPost?: ElementRef;
+
+  constructor(public postService: PostService, public route: ActivatedRoute, public router: Router, public commentService: CommentService) { }
 
   async ngOnInit() {
     let postId: string | null = this.route.snapshot.paramMap.get("postId");
@@ -72,13 +75,13 @@ export class PostComponent {
     let formData = new FormData();
     formData.append("text", this.newComment)
 
-    if(this.myPicture != null) {
+    if (this.myPicture != null) {
 
       let file = this.myPicture.nativeElement.files[0];
-      if(file == null) return;
+      if (file == null) return;
 
       let count = 0;
-      while(file != null){
+      while (file != null) {
         formData.append("image" + count, file);
         count++;
         file = this.myPicture.nativeElement.files[count];
@@ -128,11 +131,26 @@ export class PostComponent {
   async editMainComment() {
     if (this.post == null || this.post.mainComment == null) return;
 
-    let commentDTO = {
-      text: this.newMainCommentText
+
+    if (this.myPictureModifPost == undefined) {
+      console.log("Input HTML non chargé")
+      return;
+    }
+    let files = this.myPictureModifPost.nativeElement.files;
+    if (files.length == 0) {
+      console.log("Aucun fichier")
+      return;
     }
 
-    let newMainComment = await this.commentService.editComment(commentDTO, this.post?.mainComment.id);
+    let formData = new FormData();
+    formData.append("textEdit", this.newMainCommentText);
+    let i = 0
+    while (i < files.length) {
+      formData.append("image" + i, files[i], files[i].name)
+      i++;
+    }
+
+    let newMainComment = await this.commentService.editComment(formData, this.post?.mainComment.id);
     this.post.mainComment = newMainComment;
     this.toggleMainCommentEdit = false;
   }
@@ -149,8 +167,15 @@ export class PostComponent {
       this.initMasonry();
     });
 
-    if (this.masongriditems!.length > 0) {
+    if (this.masongriditems!.length < 5) {
       this.initMasonry();
+    }
+
+    this.glideitems?.changes.subscribe(e => {
+      this.initGlide();
+    });
+    if (this.glideitems!.length > 4) {
+      this.initGlide();
     }
   }
 
@@ -158,13 +183,23 @@ export class PostComponent {
     var grid = this.masongrid?.nativeElement;
     var msnry = new Masonry(grid, {
       itemSelector: '.grid-item',
-      columnWidth: 320, // À modifier si le résultat est moche
-      gutter: 3
+      columnWidth: 1, // À modifier si le résultat est moche
+      gutter: 0
     });
 
     imagesLoaded(grid).on('progress', function () {
       msnry.layout();
     });
+  }
+
+
+  initGlide() {
+    var glide = new Glide('.glide', {
+      type: 'carousel',
+      focusAt: 'center',
+      perView: Math.ceil(window.innerWidth / 700)
+    });
+    glide.mount();
   }
 
 }

@@ -20,7 +20,7 @@ const domain = "https://localhost:7216/";
 })
 export class CommentComponent {
 
-  @Input() comment : Comment | null = null;
+  @Input() comment: Comment | null = null;
 
   // Icônes Font Awesome
   faEllipsis = faEllipsis;
@@ -31,22 +31,24 @@ export class CommentComponent {
   faXmark = faXmark;
 
   // Plein de variables sus pour afficher / cacher des éléments HTML
-  replyToggle : boolean = false;
-  editToggle : boolean = false;
-  repliesToggle : boolean = false;
-  isAuthor : boolean = false;
-  editMenu : boolean = false;
-  displayInputFile : boolean = false;
+  replyToggle: boolean = false;
+  editToggle: boolean = false;
+  repliesToggle: boolean = false;
+  isAuthor: boolean = false;
+  editMenu: boolean = false;
+  displayInputFile: boolean = false;
 
   // Variables associées à des inputs
   newComment : string = "";
   editedText ?: string;
   username : string | null = null;
 
-  pictureIds : number[] = [];
-  @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
+  pictureIds: number[] = [];
+  @ViewChild("photoEdit", { static: false }) myPictureEdit?: ElementRef;
+  @ViewChild("photo", { static: false }) myPicture?: ElementRef;
 
-  constructor(public commentService : CommentService, public http : HttpClient) { }
+
+  constructor(public commentService: CommentService, public http: HttpClient) { }
 
   async ngOnInit() {
     this.isAuthor = localStorage.getItem("username") == this.comment?.username;
@@ -59,25 +61,25 @@ export class CommentComponent {
   // Créer un nouveau sous-commentaire au commentaire affiché dans ce composant
   // (Pouvoir les commentaires du post, donc ceux qui sont enfant du commentaire principal du post,
   // voyez le composant fullPost !)
-  async createComment(){
-    if(this.newComment == ""){
+  async createComment() {
+    if (this.newComment == "") {
       alert("Écris un commentaire niochon !");
       return;
     }
 
-    if(this.comment == null) return;
-    if(this.comment.subComments == null) this.comment.subComments = [];
+    if (this.comment == null) return;
+    if (this.comment.subComments == null) this.comment.subComments = [];
 
     let formData = new FormData();
     formData.append("text", this.newComment)
-    
-    if(this.myPicture != null) {
+
+    if (this.myPicture != null) {
 
       let file = this.myPicture.nativeElement.files[0];
-      if(file == null) return;
+      if (file == null) return;
 
       let count = 0;
-      while(file != null){
+      while (file != null) {
         formData.append("image" + count, file);
         count++;
         file = this.myPicture.nativeElement.files[count];
@@ -92,15 +94,28 @@ export class CommentComponent {
   }
 
   // Modifier le texte (et éventuellement ajouter des images) d'un commentaire
-  async editComment(){
+  async editComment() {
 
-    if(this.comment == null || this.editedText == undefined) return;
+    if (this.comment == null || this.editedText == undefined) return;
 
-    let commentDTO = {
-      text : this.editedText
+    let formData = new FormData();
+    formData.append("textEdit", this.editedText)
+
+    if (this.myPictureEdit != null) {
+
+      let file = this.myPictureEdit.nativeElement.files[0];
+      if (file == null) return;
+
+      let count = 0;
+      while (file != null) {
+        formData.append("image" + count, file);
+        count++;
+        file = this.myPictureEdit.nativeElement.files[count];
+      }
     }
 
-    let newMainComment = await this.commentService.editComment(commentDTO, this.comment.id);
+
+    let newMainComment = await this.commentService.editComment(formData, this.comment.id);
     this.comment = newMainComment;
     this.editedText = this.comment.text;
     this.editMenu = false;
@@ -108,12 +123,12 @@ export class CommentComponent {
   }
 
   // Supprimer un commentaire (le serveur va le soft ou le hard delete, selon la présence de sous-commentaires)
-  async deleteComment(){
-    if(this.comment == null || this.editedText == undefined) return;
+  async deleteComment() {
+    if (this.comment == null || this.editedText == undefined) return;
     await this.commentService.deleteComment(this.comment.id);
 
     // Changements visuels pour le soft-delete
-    if(this.comment.subComments != null && this.comment.subComments.length > 0){
+    if (this.comment.subComments != null && this.comment.subComments.length > 0) {
       this.comment.username = null;
       this.comment.upvoted = false;
       this.comment.downvoted = false;
@@ -123,44 +138,44 @@ export class CommentComponent {
       this.isAuthor = false;
     }
     // Changements ... visuels ... pour le hard-delete
-    else{
+    else {
       this.comment = null;
     }
   }
 
   // Upvoter (notez que ça annule aussi tout downvote fait pas soi-même)
-  async upvote(){
-    if(this.comment == null) return;
+  async upvote() {
+    if (this.comment == null) return;
     await this.commentService.upvote(this.comment.id);
-    
+
     // Changements visuels immédiats
-    if(this.comment.upvoted){
+    if (this.comment.upvoted) {
       this.comment.upvotes -= 1;
     }
-    else{
+    else {
       this.comment.upvotes += 1;
     }
     this.comment.upvoted = !this.comment.upvoted;
-    if(this.comment.downvoted){
+    if (this.comment.downvoted) {
       this.comment.downvoted = false;
       this.comment.downvotes -= 1;
     }
   }
 
   // Upvoter (notez que ça annule aussi tout upvote fait pas soi-même)
-  async downvote(){
-    if(this.comment == null) return;
+  async downvote() {
+    if (this.comment == null) return;
     await this.commentService.downvote(this.comment.id);
 
     // Changements visuels immédiats
-    if(this.comment.downvoted){
+    if (this.comment.downvoted) {
       this.comment.downvotes -= 1;
     }
-    else{
+    else {
       this.comment.downvotes += 1;
     }
     this.comment.downvoted = !this.comment.downvoted;
-    if(this.comment.upvoted){
+    if (this.comment.upvoted) {
       this.comment.upvoted = false;
       this.comment.upvotes -= 1;
     }
