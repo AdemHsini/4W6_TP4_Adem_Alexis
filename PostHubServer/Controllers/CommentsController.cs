@@ -61,7 +61,7 @@ namespace PostHubServer.Controllers
                     MimeType = file.ContentType
                 };
 
-                image.Save(Directory.GetCurrentDirectory() + "/images/thumbnail/" + p.FileName);
+                image.Save(Directory.GetCurrentDirectory() + "/images/full/" + p.FileName);
 
                 await _pictureService.AddPicture(p);
                 
@@ -122,7 +122,7 @@ namespace PostHubServer.Controllers
 
                 if (user == null || comment.User != user) return Unauthorized();
 
-                Comment? editedComment = await _commentService.EditComment(comment, formCollection["textEdited"], pictures);
+                Comment? editedComment = await _commentService.EditComment(comment, formCollection["textEdit"], pictures);
                 if (editedComment == null) return StatusCode(StatusCodes.Status500InternalServerError);
 
                 return Ok(new CommentDisplayDTO(editedComment, true, user));
@@ -239,7 +239,7 @@ namespace PostHubServer.Controllers
         {
             Picture? picture = await _pictureService.GetPictureId(id);
 
-            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/thumbnail/" + picture.FileName);
+            byte[] bytes = System.IO.File.ReadAllBytes(Directory.GetCurrentDirectory() + "/images/" + picture.FileName);
             return File(bytes, picture.MimeType);
         }
     }

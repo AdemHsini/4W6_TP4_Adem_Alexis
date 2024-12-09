@@ -143,7 +143,7 @@ export class PostComponent {
     }
 
     let formData = new FormData();
-    formData.append("textEdited", this.newMainCommentText);
+    formData.append("textEdit", this.newMainCommentText);
     let i = 0
     while (i < files.length) {
       formData.append("image" + i, files[i], files[i].name)

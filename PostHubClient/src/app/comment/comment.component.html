@@ -18,7 +18,7 @@
     </div>
     <div *ngFor="let i of pictureIds" class="commentPictures">
       <!-- Des images pourraient être affichées ici... -->
-      <img [src]="'https://localhost:7216/api/Comments/GetCommentPicture/' + i" alt="Picture">
+      <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture" />
     </div>
   </div>
 

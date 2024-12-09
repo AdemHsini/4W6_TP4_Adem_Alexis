@@ -96,11 +96,24 @@ export class CommentComponent {
 
     if (this.comment == null || this.editedText == undefined) return;
 
-    let commentDTO = {
-      text: this.editedText
+    let formData = new FormData();
+    formData.append("textEdit", this.editedText)
+
+    if (this.myPictureEdit != null) {
+
+      let file = this.myPictureEdit.nativeElement.files[0];
+      if (file == null) return;
+
+      let count = 0;
+      while (file != null) {
+        formData.append("image" + count, file);
+        count++;
+        file = this.myPictureEdit.nativeElement.files[count];
+      }
     }
 
-    let newMainComment = await this.commentService.editComment(commentDTO, this.comment.id);
+
+    let newMainComment = await this.commentService.editComment(formData, this.comment.id);
     this.comment = newMainComment;
     this.editedText = this.comment.text;
     this.editMenu = false;
