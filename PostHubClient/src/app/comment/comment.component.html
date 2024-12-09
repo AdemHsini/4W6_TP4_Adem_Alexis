@@ -11,14 +11,14 @@
     <!-- Texte du commentaire et éventuellement images -->
     <div class="postContent">
       <div style="flex:1; display:flex; align-items:center;">
-        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetPicture/full/' + username" alt="Avatar">
+        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
         <div *ngIf="!editToggle">{{comment.text}}</div>
         <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
           [(ngModel)]="editedText">{{comment.text}}</textarea>
       </div>
       <div *ngFor="let i of pictureIds" class="commentPictures">
         <!-- Des images pourraient être affichées ici... -->
-        <img [src]="'https://localhost:7216/api/Comments/GetCommentPicture/' + i" alt="Picture">
+        <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
       </div>
     </div>
   
