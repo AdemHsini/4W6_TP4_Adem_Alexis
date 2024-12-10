@@ -1,28 +1,28 @@
 <!-- Affichage du commentaire (oui c'est gros et laid) -->
 <div class="post" *ngIf="comment != null">
 
-  <!-- Auteur et date -->
-  <div class="postHeader">
-    <div>{{comment.username == null ? '???' : comment.username}}</div>
-    <div class="postDate">• {{comment.date | date:"dd MMMM yyyy hh:mm:ss":"":"fr"}}</div>
-    <div class="spacer"></div>
-  </div>
-
-  <!-- Texte du commentaire et éventuellement images -->
-  <div class="postContent">
-    <div style="flex:1; display:flex; align-items:center;">
-      <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
-      <div *ngIf="!editToggle">{{comment.text}}</div>
-      <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
-        [(ngModel)]="editedText">{{comment.text}}</textarea>
+    <!-- Auteur et date -->
+    <div class="postHeader">
+      <div>{{comment.username == null ? '???' : comment.username}}</div>
+      <div class="postDate">• {{comment.date | date:"dd MMMM yyyy hh:mm:ss":"":"fr"}}</div>
+      <div class="spacer"></div>
     </div>
-    <div *ngFor="let i of pictureIds" class="commentPictures">
-      <!-- Des images pourraient être affichées ici... -->
-      <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
+  
+    <!-- Texte du commentaire et éventuellement images -->
+    <div class="postContent">
+      <div style="flex:1; display:flex; align-items:center;">
+        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
+        <div *ngIf="!editToggle">{{comment.text}}</div>
+        <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
+          [(ngModel)]="editedText">{{comment.text}}</textarea>
+      </div>
+      <div *ngFor="let i of pictureIds" class="commentPictures">
+        <!-- Des images pourraient être affichées ici... -->
+        <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" target="_blank">
+          <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
+      </a>
     </div>
-
-
-
+  
     <!-- Nombreux boutons pour modifier le commentaire (votes, signalement, modification, etc.) -->
     <div class="postFooter">
       <div class="score" *ngIf="comment.username != null">
