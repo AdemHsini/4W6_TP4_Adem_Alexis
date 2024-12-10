@@ -34,8 +34,10 @@
       <div class="glide__track" data-glide-el="track">
         <ul class="glide__slides">
           <li class="glide__slide" style="height: 400px;" *ngFor="let p of post.mainComment?.picturesIds" #glideitems>
-            <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p"
+            <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" target="_blank">
+              <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p"
               style="object-fit: cover;width: 100%;height: 100%;" />
+            </a>
           </li>
         </ul>
       </div>
