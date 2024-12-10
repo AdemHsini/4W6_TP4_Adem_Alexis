@@ -89,6 +89,7 @@ namespace PostHubServer.Services
             }
             deletedComment.Upvoters = new List<User>();
             deletedComment.Downvoters = new List<User>();
+            deletedComment.Pictures!.Clear();
             await _context.SaveChangesAsync();
             return deletedComment;
         }
@@ -106,6 +107,7 @@ namespace PostHubServer.Services
             }
 
             _context.Comments.Remove(deletedComment);
+            deletedComment.Pictures!.Clear();
             await _context.SaveChangesAsync();
             return deletedComment;
         }

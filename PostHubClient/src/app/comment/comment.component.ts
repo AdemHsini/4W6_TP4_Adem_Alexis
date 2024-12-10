@@ -39,9 +39,9 @@ export class CommentComponent {
   displayInputFile: boolean = false;
 
   // Variables associées à des inputs
-  newComment : string = "";
-  editedText ?: string;
-  username : string | null = null;
+  newComment: string = "";
+  editedText?: string;
+  username: string | null = null;
 
   pictureIds: number[] = [];
   @ViewChild("photoEdit", { static: false }) myPictureEdit?: ElementRef;
@@ -53,8 +53,8 @@ export class CommentComponent {
   async ngOnInit() {
     this.isAuthor = localStorage.getItem("username") == this.comment?.username;
     this.editedText = this.comment?.text;
-    if(this.comment != null)
-    this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
+    if (this.comment != null)
+      this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
     this.username = localStorage.getItem("username");
   }
 
@@ -125,6 +125,7 @@ export class CommentComponent {
   // Supprimer un commentaire (le serveur va le soft ou le hard delete, selon la présence de sous-commentaires)
   async deleteComment() {
     if (this.comment == null || this.editedText == undefined) return;
+
     await this.commentService.deleteComment(this.comment.id);
 
     // Changements visuels pour le soft-delete
@@ -135,6 +136,7 @@ export class CommentComponent {
       this.comment.upvotes = 0;
       this.comment.downvotes = 0;
       this.comment.text = "Commentaire supprimé.";
+      this.comment.picturesIds = [];
       this.isAuthor = false;
     }
     // Changements ... visuels ... pour le hard-delete

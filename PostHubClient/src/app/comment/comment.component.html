@@ -1,27 +1,28 @@
 <!-- Affichage du commentaire (oui c'est gros et laid) -->
 <div class="post" *ngIf="comment != null">
 
-    <!-- Auteur et date -->
-    <div class="postHeader">
-      <div>{{comment.username == null ? '???' : comment.username}}</div>
-      <div class="postDate">• {{comment.date | date:"dd MMMM yyyy hh:mm:ss":"":"fr"}}</div>
-      <div class="spacer"></div>
+  <!-- Auteur et date -->
+  <div class="postHeader">
+    <div>{{comment.username == null ? '???' : comment.username}}</div>
+    <div class="postDate">• {{comment.date | date:"dd MMMM yyyy hh:mm:ss":"":"fr"}}</div>
+    <div class="spacer"></div>
+  </div>
+
+  <!-- Texte du commentaire et éventuellement images -->
+  <div class="postContent">
+    <div style="flex:1; display:flex; align-items:center;">
+      <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
+      <div *ngIf="!editToggle">{{comment.text}}</div>
+      <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
+        [(ngModel)]="editedText">{{comment.text}}</textarea>
     </div>
-  
-    <!-- Texte du commentaire et éventuellement images -->
-    <div class="postContent">
-      <div style="flex:1; display:flex; align-items:center;">
-        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
-        <div *ngIf="!editToggle">{{comment.text}}</div>
-        <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
-          [(ngModel)]="editedText">{{comment.text}}</textarea>
-      </div>
-      <div *ngFor="let i of pictureIds" class="commentPictures">
-        <!-- Des images pourraient être affichées ici... -->
-        <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
-      </div>
+    <div *ngFor="let i of pictureIds" class="commentPictures">
+      <!-- Des images pourraient être affichées ici... -->
+      <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
     </div>
-  
+
+
+
     <!-- Nombreux boutons pour modifier le commentaire (votes, signalement, modification, etc.) -->
     <div class="postFooter">
       <div class="score" *ngIf="comment.username != null">
@@ -57,9 +58,9 @@
         <button *ngIf="editToggle" (click)="editComment()">Modifier</button>
       </div>
     </div>
-  
+
   </div>
-  
+
   <!-- Boîte pour répondre au commentaire affiché dans ce composant -->
   <div *ngIf="replyToggle" id="commentBox">
     <input type="text" name="newComment" id="newComment" placeholder="Ajouter un commentaire" [(ngModel)]="newComment">
@@ -70,7 +71,7 @@
     <button (click)="displayInputFile = !displayInputFile"><fa-icon [icon]="faImage"></fa-icon></button>
     <button (click)="createComment()">Ajouter</button>
   </div>
-  
+
   <!-- Liste de sous-commentaires -->
   <div id="subComments" *ngIf="repliesToggle">
     <div class="comment" *ngFor="let c of comment!.subComments">

@@ -237,3 +237,10 @@
     margin-top: 12px;
     height: 200px;
 }
+
+.hidden {
+    display: none;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+}
