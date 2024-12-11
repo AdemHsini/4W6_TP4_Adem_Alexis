@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PostHubServer.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -63,20 +65,6 @@ namespace PostHubServer.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Hubs", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Pictures",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MimeType = table.Column<string>(type: "nvarchar(max)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Pictures", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -194,7 +182,8 @@ namespace PostHubServer.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ParentCommentId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Reported = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -284,6 +273,26 @@ namespace PostHubServer.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Pictures",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    FileName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MimeType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CommentId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Pictures", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Pictures_Comments_CommentId",
+                        column: x => x.CommentId,
+                        principalTable: "Comments",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Posts",
                 columns: table => new
                 {
@@ -307,6 +316,33 @@ namespace PostHubServer.Migrations
                         column: x => x.HubId,
                         principalTable: "Hubs",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "admin", "ADMIN" },
+                    { "2", null, "moderator", "MODERATOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FileName", "LockoutEnabled", "LockoutEnd", "MimeType", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[,]
+                {
+                    { "11111111-1111-1111-1111-111111111111", 0, "989e63e2-ee3f-44bf-93a3-25e5cf28360a", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAEDvBkWZpatfBB2ErL20w9HydiEf6L28Jadw37JNUWECcPcIAfkBBj55skmtVXCKe5g==", null, false, "ddf30649-3bd1-4380-80ae-5ac4e351428f", false, "UserAdmin" },
+                    { "22222222-2222-2222-2222-222222222222", 0, "ee11675c-acb2-42d5-8448-30a426e3b1c1", "m@m.m", false, null, false, null, null, "M@M.M", "USERMODO", "AQAAAAIAAYagAAAAENQJ4eJJ1y3tDgmWu/8iiiOGtpZFJPtHYFfuQu6OLJidOX4f/opwrwDHhbh9x8mu2w==", null, false, "4268223b-5530-4660-9b9d-42e6105b07da", false, "UserModo" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[,]
+                {
+                    { "1", "11111111-1111-1111-1111-111111111111" },
+                    { "2", "22222222-2222-2222-2222-222222222222" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -372,6 +408,11 @@ namespace PostHubServer.Migrations
                 name: "IX_HubUser_UsersId",
                 table: "HubUser",
                 column: "UsersId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Pictures_CommentId",
+                table: "Pictures",
+                column: "CommentId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Posts_HubId",

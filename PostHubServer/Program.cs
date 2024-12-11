@@ -6,6 +6,7 @@ using PostHubServer.Data;
 using PostHubServer.Models;
 using PostHubServer.Services;
 using System.Text;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -71,7 +72,6 @@ builder.Services.AddCors(options =>
         policy.AllowAnyHeader();
     });
 });
-
 
 // -~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-~-
 var app = builder.Build();

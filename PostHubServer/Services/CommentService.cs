@@ -1,4 +1,6 @@
-﻿using PostHubServer.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PostHubServer.Data;
 using PostHubServer.Models;
 
 namespace PostHubServer.Services
@@ -22,7 +24,27 @@ namespace PostHubServer.Services
 
         // Créer un commentaire (possiblement le commentaire principal d'un post, mais pas forcément)
         // Un commentaire parent peut être fourni si le commentaire créé est un sous-commentaire
-        public async Task<Comment?> CreateComment(User user, string text, Comment? parentComment)
+        public async Task<Comment?> CreateComment(User user, string text, Comment? parentComment, List<Picture>? pictures)
+        {
+            if (IsContextNull()) return null;
+
+            Comment newComment = new Comment()
+            {
+                Id = 0,
+                Text = text,
+                Date = DateTime.UtcNow,
+                User = user, // Auteur
+                ParentComment = parentComment, // null si commentaire principal du post
+                Pictures = pictures
+            };
+
+            _context.Comments.Add(newComment);
+            await _context.SaveChangesAsync();
+
+            return newComment;
+        }
+
+        public async Task<Comment?> CreateCommentPost(User user, string text, Comment? parentComment)
         {
             if (IsContextNull()) return null;
 
@@ -40,11 +62,11 @@ namespace PostHubServer.Services
 
             return newComment;
         }
-
         // Modifier le texte d'un commentaire
-        public async Task<Comment?> EditComment(Comment comment, string text)
+        public async Task<Comment?> EditComment(Comment comment, string text, List<Picture> pictures)
         {
             comment.Text = text;
+            comment.Pictures = pictures;
             await _context.SaveChangesAsync();
 
             return comment;
@@ -69,6 +91,7 @@ namespace PostHubServer.Services
             }
             deletedComment.Upvoters = new List<User>();
             deletedComment.Downvoters = new List<User>();
+            deletedComment.Pictures!.Clear();
             await _context.SaveChangesAsync();
             return deletedComment;
         }
@@ -86,6 +109,7 @@ namespace PostHubServer.Services
             }
 
             _context.Comments.Remove(deletedComment);
+            deletedComment.Pictures!.Clear();
             await _context.SaveChangesAsync();
             return deletedComment;
         }
@@ -135,6 +159,23 @@ namespace PostHubServer.Services
             return true; // Basculement du downvote réussi
         }
 
+        public async Task<bool> reportComment(Comment comment)
+        {
+            if (IsContextNull()) return false;
+
+            comment.Reported = true;
+
+            await _context.SaveChangesAsync();
+
+            return true; // Basculement du downvote réussi
+        }
+
+        public async Task<List<Comment>> getReportComments()
+        {
+            if (IsContextNull()) return null;
+
+            return await _context.Comments.Include(i => i.User).Where(c => c.Reported).ToListAsync();
+        }
         private bool IsContextNull() => _context == null || _context.Comments == null;
     }
 }

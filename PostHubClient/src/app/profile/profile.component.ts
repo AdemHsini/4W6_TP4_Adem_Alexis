@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ElementRef, ViewChild } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,19 +11,73 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-  userIsConnected : boolean = false;
+  userIsConnected: boolean = false;
+  userRole: string | null = null;
 
   // Vous êtes obligés d'utiliser ces trois propriétés
-  oldPassword : string = "";
-  newPassword : string = "";
-  newPasswordConfirm : string = "";
+  oldPassword: string = "";
+  newPassword: string = "";
+  newPasswordConfirm: string = "";
 
-  username : string | null = null;
+  username: string | null = null;
+  imageUrl: string = '';
 
-  constructor(public userService : UserService) { }
+  @ViewChild("photo", { static: false }) myPicture?: ElementRef;
+
+  constructor(public userService: UserService) { }
 
   ngOnInit() {
     this.userIsConnected = localStorage.getItem("token") != null;
     this.username = localStorage.getItem("username");
+    this.getUserRole();
+  }
+
+  async getUserRole() {
+    try {
+      this.userRole = await this.userService.getUserRole();
+    } catch (error) {
+      console.error("Erreur lors de la récupération du rôle de l'utilisateur.");
+    }
+  }
+
+  async updateUser() {
+
+    let formData = new FormData();
+
+    if (this.myPicture != null) {
+      let file = this.myPicture.nativeElement.files[0];
+      formData.append("image", file);
+    }
+
+    if (this.username != null)
+      await this.userService.update(formData, this.username);
+
+    window.location.reload()
+  }
+
+  async changePassword() {
+    if (this.newPassword != this.newPasswordConfirm) {
+      alert("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+    if (this.username != null) {
+      await this.userService.changePassword(this.username, this.oldPassword, this.newPassword);
+      alert("Mot de passe changé avec succès.");
+    }
+    window.location.reload()
+  }
+
+  async addModerator(username: string) {
+    if (username) {
+      try {
+        await this.userService.addModerator(username);
+        alert("Modérateur ajouté avec succès.");
+      } catch (error) {
+        alert("Erreur lors de l'ajout du modérateur.");
+      }
+    } else {
+      alert("Veuillez entrer un nom d'utilisateur.");
+    }
+    window.location.reload();
   }
 }

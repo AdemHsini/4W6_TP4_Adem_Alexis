@@ -24,11 +24,14 @@ export class AppComponent {
   faChevronDown = faChevronDown;
 
   searchText : string = "";
+  isModo: boolean = false;
 
   hubsToggled : boolean = false;
   hubList : Hub[] = [];
 
-  constructor(public hubService : HubService){}
+  constructor(public hubService : HubService){
+  }
+  
 
   async toggleHubs(){
     this.faChevronDown = this.faChevronDown == faChevronDown ? faChevronUp : faChevronDown;
@@ -40,6 +43,15 @@ export class AppComponent {
     }
   }
 
+  isModerator(): boolean {
+    const userRole = localStorage.getItem('userRole');
+    return userRole == 'moderator' || userRole == 'admin';
+  }
+  
+  updateIsModo() {
+    this.isModo = this.isModerator();
+  }
+  
   logout(){
     localStorage.clear();
     location.reload();

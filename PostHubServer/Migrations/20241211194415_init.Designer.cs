@@ -12,15 +12,15 @@ using PostHubServer.Data;
 namespace PostHubServer.Migrations
 {
     [DbContext(typeof(PostHubContext))]
-    [Migration("20241103215254_Init")]
-    partial class Init
+    [Migration("20241211194415_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.10")
+                .HasAnnotation("ProductVersion", "8.0.11")
                 .HasAnnotation("Proxies:ChangeTracking", false)
                 .HasAnnotation("Proxies:CheckEquality", false)
                 .HasAnnotation("Proxies:LazyLoading", true)
@@ -98,6 +98,20 @@ namespace PostHubServer.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "1",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
+                            Id = "2",
+                            Name = "moderator",
+                            NormalizedName = "MODERATOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -185,6 +199,18 @@ namespace PostHubServer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "11111111-1111-1111-1111-111111111111",
+                            RoleId = "1"
+                        },
+                        new
+                        {
+                            UserId = "22222222-2222-2222-2222-222222222222",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -219,6 +245,9 @@ namespace PostHubServer.Migrations
 
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Reported")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -261,6 +290,9 @@ namespace PostHubServer.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CommentId")
+                        .HasColumnType("int");
+
                     b.Property<string>("FileName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -270,6 +302,8 @@ namespace PostHubServer.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CommentId");
 
                     b.ToTable("Pictures");
                 });
@@ -371,6 +405,40 @@ namespace PostHubServer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "11111111-1111-1111-1111-111111111111",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "989e63e2-ee3f-44bf-93a3-25e5cf28360a",
+                            Email = "a@a.a",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "A@A.A",
+                            NormalizedUserName = "USERADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEDvBkWZpatfBB2ErL20w9HydiEf6L28Jadw37JNUWECcPcIAfkBBj55skmtVXCKe5g==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ddf30649-3bd1-4380-80ae-5ac4e351428f",
+                            TwoFactorEnabled = false,
+                            UserName = "UserAdmin"
+                        },
+                        new
+                        {
+                            Id = "22222222-2222-2222-2222-222222222222",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "ee11675c-acb2-42d5-8448-30a426e3b1c1",
+                            Email = "m@m.m",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "M@M.M",
+                            NormalizedUserName = "USERMODO",
+                            PasswordHash = "AQAAAAIAAYagAAAAENQJ4eJJ1y3tDgmWu/8iiiOGtpZFJPtHYFfuQu6OLJidOX4f/opwrwDHhbh9x8mu2w==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "4268223b-5530-4660-9b9d-42e6105b07da",
+                            TwoFactorEnabled = false,
+                            UserName = "UserModo"
+                        });
                 });
 
             modelBuilder.Entity("CommentUser", b =>
@@ -484,6 +552,15 @@ namespace PostHubServer.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("PostHubServer.Models.Picture", b =>
+                {
+                    b.HasOne("PostHubServer.Models.Comment", "Comment")
+                        .WithMany("Pictures")
+                        .HasForeignKey("CommentId");
+
+                    b.Navigation("Comment");
+                });
+
             modelBuilder.Entity("PostHubServer.Models.Post", b =>
                 {
                     b.HasOne("PostHubServer.Models.Hub", "Hub")
@@ -504,6 +581,8 @@ namespace PostHubServer.Migrations
             modelBuilder.Entity("PostHubServer.Models.Comment", b =>
                 {
                     b.Navigation("MainCommentOf");
+
+                    b.Navigation("Pictures");
 
                     b.Navigation("SubComments");
                 });

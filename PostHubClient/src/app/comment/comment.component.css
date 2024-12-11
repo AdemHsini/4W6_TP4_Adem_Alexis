@@ -177,7 +177,7 @@
 }
 
 .commentPictures img{
-    height : 100px;
+    width: 200px;
 }
 
 .commentPictureAdd{
@@ -211,6 +211,17 @@
 
 .avatar{
     height:40px;
+    width: 40px;
     border-radius:20px;
     margin-right:10px;
+}
+
+.grid-item {
+    margin-bottom: 20px;
+    margin-top: 3px;
+    height: 200px;
+}
+
+.grid-item img{
+    height: 200px;
 }
