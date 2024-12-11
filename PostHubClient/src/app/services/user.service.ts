@@ -9,16 +9,16 @@ const domain = "https://localhost:7216/";
 })
 export class UserService {
 
-  constructor(public http : HttpClient) { }
+  constructor(public http: HttpClient) { }
 
   // S'inscrire
-  async register(username : string, email : string, password : string, passwordConfirm : string) : Promise<void>{
+  async register(username: string, email: string, password: string, passwordConfirm: string): Promise<void> {
 
     let registerDTO = {
-      username : username,
-      email : email,
-      password : password,
-      passwordConfirm : passwordConfirm
+      username: username,
+      email: email,
+      password: password,
+      passwordConfirm: passwordConfirm
     };
 
     let x = await lastValueFrom(this.http.post<any>(domain + "api/Users/Register", registerDTO));
@@ -26,11 +26,11 @@ export class UserService {
   }
 
   // Se connecter
-  async login(username : string, password : string) : Promise<void>{
+  async login(username: string, password: string): Promise<void> {
 
     let loginDTO = {
-      username : username,
-      password : password
+      username: username,
+      password: password
     };
 
     let x = await lastValueFrom(this.http.post<any>(domain + "api/Users/Login", loginDTO));
@@ -42,7 +42,21 @@ export class UserService {
     localStorage.setItem("username", x.username);
   }
 
-  async update(dto : any, userName : string) : Promise<Comment>{
+
+  async changePassword(username: string, oldPassword: string, newPassword: string): Promise<void> {
+
+    let changePasswordDTO = {
+      username: username,
+      oldPassword: oldPassword,
+      newPassword: newPassword
+    };
+
+    let x = await lastValueFrom(this.http.post<any>(domain + "api/Users/ChangePassword", changePasswordDTO));
+    console.log(x);
+  }
+
+
+  async update(dto: any, userName: string): Promise<Comment> {
 
     let x = await lastValueFrom(this.http.put<any>(domain + "api/Users/Update/" + userName, dto));
     console.log(x);

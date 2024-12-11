@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.VisualStudio.Web.CodeGenerators.Mvc.Templates.BlazorIdentity.Pages.Manage;
 using PostHubServer.Models;
 using PostHubServer.Models.DTOs;
 using PostHubServer.Services;
@@ -48,7 +49,7 @@ namespace PostHubServer.Controllers
         [HttpPost]
         public async Task<ActionResult> Login(LoginDTO login)
         {
-            User? user = await _userManager.FindByNameAsync(login.Username);
+            User? user = await _userManager.FindByNameAsync(login.Username) ?? await _userManager.FindByEmailAsync(login.Username);
             if (user != null && await _userManager.CheckPasswordAsync(user, login.Password))
             {
                 IList<string> roles = await _userManager.GetRolesAsync(user);
@@ -134,6 +135,23 @@ namespace PostHubServer.Controllers
             }
             return StatusCode(StatusCodes.Status404NotFound,
                     new { Message = "Le nom d'utilisateur introuvable." });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ChangePassword(ChangePasswordDTO changePasswordDTO)
+        {
+            User? user = await _userManager.FindByNameAsync(changePasswordDTO.Username);
+            if(user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound,
+                    new { Message = "L'utilisateur n'existe pas." });
+            }
+            IdentityResult result = await _userManager.ChangePasswordAsync(user, changePasswordDTO.oldPassword, changePasswordDTO.NewPassword);
+            if (!result.Succeeded)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, new { Message = "Le changement de mot de passe a échoué." });
+            }
+            return Ok(new { Message = "Le mot de passe a été changé avec succès." });
         }
     }
 }
