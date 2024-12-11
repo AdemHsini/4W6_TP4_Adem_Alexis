@@ -403,15 +403,15 @@ namespace PostHubServer.Migrations
                         {
                             Id = "11111111-1111-1111-1111-111111111111",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "ae07ca8f-6456-4b33-9144-e46a9f30b387",
+                            ConcurrencyStamp = "50324e31-0ac4-4de7-8e54-331311763634",
                             Email = "a@a.a",
                             EmailConfirmed = true,
                             LockoutEnabled = false,
                             NormalizedEmail = "A@A.A",
                             NormalizedUserName = "USERADMIN",
-                            PasswordHash = "AQAAAAIAAYagAAAAENpJVqtg9rIyxmsN1sPmSqmepiPkmqKq75OJUEg4W0O5CnPsHuUK5PX693oG1ZYVFQ==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMSc997iWeAF196vGEv/fcTisTOv0aQs3aY98r1rmoNuu8iZCCQvjifDgNSK1ACNFA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "d5cadcc7-80c8-4e91-9583-800cde751bf1",
+                            SecurityStamp = "e6083103-fd4e-46c5-9970-acf037abf9ac",
                             TwoFactorEnabled = false,
                             UserName = "UserAdmin"
                         });

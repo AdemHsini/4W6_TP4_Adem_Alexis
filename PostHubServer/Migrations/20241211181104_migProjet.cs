@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PostHubServer.Migrations
 {
     /// <inheritdoc />
-    public partial class Admin : Migration
+    public partial class migProjet : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -330,7 +330,7 @@ namespace PostHubServer.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FileName", "LockoutEnabled", "LockoutEnd", "MimeType", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-                values: new object[] { "11111111-1111-1111-1111-111111111111", 0, "ae07ca8f-6456-4b33-9144-e46a9f30b387", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAENpJVqtg9rIyxmsN1sPmSqmepiPkmqKq75OJUEg4W0O5CnPsHuUK5PX693oG1ZYVFQ==", null, false, "d5cadcc7-80c8-4e91-9583-800cde751bf1", false, "UserAdmin" });
+                values: new object[] { "11111111-1111-1111-1111-111111111111", 0, "50324e31-0ac4-4de7-8e54-331311763634", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAEMSc997iWeAF196vGEv/fcTisTOv0aQs3aY98r1rmoNuu8iZCCQvjifDgNSK1ACNFA==", null, false, "e6083103-fd4e-46c5-9970-acf037abf9ac", false, "UserAdmin" });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
