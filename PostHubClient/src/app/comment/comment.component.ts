@@ -197,6 +197,13 @@ export class CommentComponent {
     this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
   }
 
+  async reportComment() {
+    if (this.comment == null || this.editedText == undefined) return;
+    await this.commentService.reportComment(this.comment.id);
+    
+    alert("Commentaire signalé !");
+  }
+
   ngAfterViewInit() {
     this.masongriditems?.changes.subscribe(e => {
       this.initMasonry();

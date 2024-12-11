@@ -12,8 +12,13 @@ using PostHubServer.Data;
 namespace PostHubServer.Migrations
 {
     [DbContext(typeof(PostHubContext))]
+<<<<<<<< HEAD:PostHubServer/Migrations/20241211081429_Admin.Designer.cs
     [Migration("20241211081429_Admin")]
     partial class Admin
+========
+    [Migration("20241211060530_init")]
+    partial class init
+>>>>>>>> dev:PostHubServer/Migrations/20241211060530_init.Designer.cs
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -240,6 +245,9 @@ namespace PostHubServer.Migrations
 
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Reported")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()

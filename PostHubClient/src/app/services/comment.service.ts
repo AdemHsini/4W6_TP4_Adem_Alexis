@@ -65,4 +65,11 @@ export class CommentService {
 
   }
 
+  async reportComment(commentId: number): Promise<void> {
+
+    let x = await lastValueFrom(this.http.put<any>(domain + "api/Comments/ReportComment/" + commentId, null));
+    console.log(x);
+
+  }
+
 }
