@@ -217,6 +217,9 @@ namespace PostHubServer.Migrations
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("Reported")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Text")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
