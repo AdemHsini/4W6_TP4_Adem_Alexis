@@ -63,4 +63,15 @@ export class UserService {
     return x;
 
   }
+
+  async addModerator(name: string): Promise<void> {
+    let x = await lastValueFrom(this.http.put<any>(domain + "api/Users/MakeModerator/" + name, null));
+    console.log(x);
+  }
+
+  async getUserRole(): Promise<string> {
+    let x = await lastValueFrom(this.http.get<any>(domain + "api/Users/GetUserRole"));
+    console.log(x.roles[0]);
+    return x.roles[0];
+  }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -152,6 +153,39 @@ namespace PostHubServer.Controllers
                 return StatusCode(StatusCodes.Status400BadRequest, new { Message = "Le changement de mot de passe a échoué." });
             }
             return Ok(new { Message = "Le mot de passe a été changé avec succès." });
+        }
+
+        [HttpPut("{name}")]
+        [Authorize(Roles="admin")]
+        public async Task<ActionResult> MakeModerator(string name)
+        {
+            User? newModerator = await _userManager.FindByNameAsync(name);
+            if (newModerator == null)
+            {
+                return NotFound(new { Message = "L'utilisateur n'existe pas." });
+            }
+            await _userManager.AddToRoleAsync(newModerator, "moderator");
+            return Ok(new { Message = name + " est maintenant moderateur !" });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetUserRole()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+            {
+                return StatusCode(StatusCodes.Status401Unauthorized, new { Message = "Utilisateur non authentifié." });
+            }
+
+            User? user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return StatusCode(StatusCodes.Status404NotFound, new { Message = "Utilisateur introuvable." });
+            }
+
+            IList<string> roles = await _userManager.GetRolesAsync(user);
+            return Ok(new { Roles = roles });
+
         }
     }
 }

@@ -3,10 +3,12 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
+#pragma warning disable CA1814 // Prefer jagged arrays over multidimensional
+
 namespace PostHubServer.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class Admin : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -314,6 +316,25 @@ namespace PostHubServer.Migrations
                         principalTable: "Hubs",
                         principalColumn: "Id");
                 });
+
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[,]
+                {
+                    { "1", null, "admin", "ADMIN" },
+                    { "2", null, "moderator", "MODERATOR" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FileName", "LockoutEnabled", "LockoutEnd", "MimeType", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "11111111-1111-1111-1111-111111111111", 0, "ae07ca8f-6456-4b33-9144-e46a9f30b387", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAENpJVqtg9rIyxmsN1sPmSqmepiPkmqKq75OJUEg4W0O5CnPsHuUK5PX693oG1ZYVFQ==", null, false, "d5cadcc7-80c8-4e91-9583-800cde751bf1", false, "UserAdmin" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "1", "11111111-1111-1111-1111-111111111111" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
