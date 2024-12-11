@@ -10,19 +10,21 @@
   
     <!-- Texte du commentaire et éventuellement images -->
     <div class="postContent">
-      <div style="flex:1; display:flex; align-items:center;">
         <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
         <div *ngIf="!editToggle">{{comment.text}}</div>
         <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
           [(ngModel)]="editedText">{{comment.text}}</textarea>
-      </div>
-      <div *ngFor="let i of pictureIds" class="commentPictures">
+    </div>
+    <div class="grid" #masongrid>
+      <div #masongriditems class="grid-item" *ngFor="let i of pictureIds">
         <!-- Des images pourraient être affichées ici... -->
         <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" target="_blank">
           <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + i" alt="Picture">
-      </a>
+        </a>
+        <button *ngIf="isAuthor" (click)="deletePicture(i)" style="position: absolute; top: 5px; right: 5px; background: black; color: white; border: none; border-radius: 50%; cursor: pointer;">
+          x</button>
+      </div>
     </div>
-  
     <!-- Nombreux boutons pour modifier le commentaire (votes, signalement, modification, etc.) -->
     <div class="postFooter">
       <div class="score" *ngIf="comment.username != null">

@@ -202,4 +202,10 @@ export class PostComponent {
     glide.mount();
   }
 
+  async deletePicture(pictureId : Number) {
+    if (this.post == null || this.post.mainComment == undefined) return;
+    await this.commentService.deleteCommentPicture(pictureId);
+
+    this.post.mainComment.picturesIds = await this.commentService.getPictureIds(this.post.mainComment.id);
+  }
 }

@@ -41,5 +41,14 @@ namespace PostHubServer.Services
             await _context.SaveChangesAsync();
             return p;
         }
+
+        public async Task<ActionResult<Picture?>> DeletePicture(Picture p)
+        {
+            File.Delete(Directory.GetCurrentDirectory() + "/images/full/" + p.FileName);
+
+            _context.Pictures.Remove(p);
+            await _context.SaveChangesAsync();
+            return p;
+        }
     }
 }

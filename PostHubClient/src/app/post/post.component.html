@@ -34,10 +34,16 @@
       <div class="glide__track" data-glide-el="track">
         <ul class="glide__slides">
           <li class="glide__slide" style="height: 400px;" *ngFor="let p of post.mainComment?.picturesIds" #glideitems>
-            <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" target="_blank">
-              <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p"
-              style="object-fit: cover;width: 100%;height: 100%;" />
-            </a>
+            <div style="position: relative; height: 100%;">
+              <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" target="_blank">
+                <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p"
+                style="object-fit: cover;width: 100%;height: 100%;" />
+              </a>
+              <button *ngIf="isAuthor" (click)="deletePicture(p)" 
+                style="position: absolute; top: 5px; right: 5px; background: black; color: white; border: none; border-radius: 50%; cursor: pointer;">
+                x
+              </button>
+            </div>
           </li>
         </ul>
       </div>
@@ -64,9 +70,14 @@
       <div *ngIf="!toggleMainCommentEdit">{{post.mainComment!.text}}</div>
       <textarea id="commentTextEdit" *ngIf="toggleMainCommentEdit" type="text"
         [(ngModel)]="newMainCommentText"></textarea>
-      <div class="grid" #masongrid>
-        <img #masongriditems class="grid-item" [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p"
-          *ngFor="let p of post.mainComment?.picturesIds" />
+    </div>
+    <div class="grid" #masongrid>
+      <div #masongriditems class="grid-item" *ngFor="let p of post.mainComment?.picturesIds">
+        <a [href]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" target="_blank">
+          <img [src]="'https://localhost:7216/api/Comments/GetPicture/full/' + p" />
+        </a>
+        <button *ngIf="isAuthor" (click)="deletePicture(p)" style="position: absolute; top: 5px; right: 5px; background: black; color: white; border: none; border-radius: 50%; cursor: pointer;">
+          x</button>
       </div>
     </div>
   </div>

@@ -1,5 +1,5 @@
 
-import { Component, ElementRef, Input, ViewChild } from '@angular/core';
+import { Component, ElementRef, Input, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { faDownLong, faEllipsis, faImage, faL, faMessage, faUpLong, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { CommentService } from '../services/comment.service';
 import { Comment } from '../models/comment';
@@ -10,6 +10,9 @@ import { lastValueFrom } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 
 const domain = "https://localhost:7216/";
+
+declare var Masonry: any;
+declare var imagesLoaded: any;
 
 @Component({
   selector: 'app-comment',
@@ -44,6 +47,8 @@ export class CommentComponent {
   username : string | null = null;
 
   pictureIds: number[] = [];
+  @ViewChild('masongrid') masongrid?: ElementRef;
+  @ViewChildren('masongriditems') masongriditems?: QueryList<any>;
   @ViewChild("photoEdit", { static: false }) myPictureEdit?: ElementRef;
   @ViewChild("photo", { static: false }) myPicture?: ElementRef;
 
@@ -116,6 +121,7 @@ export class CommentComponent {
 
 
     let newMainComment = await this.commentService.editComment(formData, this.comment.id);
+    this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
     this.comment = newMainComment;
     this.editedText = this.comment.text;
     this.editMenu = false;
@@ -181,4 +187,33 @@ export class CommentComponent {
     }
   }
 
+  async deletePicture(pictureId : number) {
+    if (this.comment == null || this.editedText == undefined) return;
+    await this.commentService.deleteCommentPicture(pictureId);
+
+    this.pictureIds = await this.commentService.getPictureIds(this.comment.id);
+  }
+
+  ngAfterViewInit() {
+    this.masongriditems?.changes.subscribe(e => {
+      this.initMasonry();
+    });
+
+    if (this.masongriditems!.length > 0) {
+      this.initMasonry();
+    }
+  }
+
+  initMasonry() {
+    var grid = this.masongrid?.nativeElement;
+    var msnry = new Masonry(grid, {
+      itemSelector: '.grid-item',
+      columnWidth: 1, // À modifier si le résultat est moche
+      gutter: 0
+    });
+
+    imagesLoaded(grid).on('progress', function () {
+      msnry.layout();
+    });
+  }
 }

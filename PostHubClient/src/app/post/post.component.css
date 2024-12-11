@@ -218,8 +218,8 @@
 }
 
 .grid-item {
-    margin-bottom: 3px;
-    margin-top: 8px;
+    margin-bottom: 20px;
+    margin-top: 3px;
     height: 200px;
 }
 
@@ -235,5 +235,9 @@
 .glide__track {
     margin-bottom: 12px;
     margin-top: 12px;
+    height: 200px;
+}
+
+.grid-item img{
     height: 200px;
 }
