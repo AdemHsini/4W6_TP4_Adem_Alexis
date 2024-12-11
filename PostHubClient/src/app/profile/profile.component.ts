@@ -54,5 +54,6 @@ export class ProfileComponent {
       await this.userService.changePassword(this.username, this.oldPassword, this.newPassword);
       alert("Mot de passe changé avec succès.");
     }
+    window.location.reload()
   }
 }
