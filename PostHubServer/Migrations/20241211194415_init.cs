@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace PostHubServer.Migrations
 {
     /// <inheritdoc />
-    public partial class migProjet : Migration
+    public partial class init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -321,33 +321,29 @@ namespace PostHubServer.Migrations
             migrationBuilder.InsertData(
                 table: "AspNetRoles",
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
-<<<<<<<< HEAD:PostHubServer/Migrations/20241211184107_init.cs
-                values: new object[] { "2", null, "moderator", "MODERATOR" });
-========
                 values: new object[,]
                 {
                     { "1", null, "admin", "ADMIN" },
                     { "2", null, "moderator", "MODERATOR" }
                 });
->>>>>>>> dev:PostHubServer/Migrations/20241211181104_migProjet.cs
 
             migrationBuilder.InsertData(
                 table: "AspNetUsers",
                 columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FileName", "LockoutEnabled", "LockoutEnd", "MimeType", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
-<<<<<<<< HEAD:PostHubServer/Migrations/20241211184107_init.cs
-                values: new object[] { "22222222-2222-2222-2222-222222222222", 0, "3126b631-9439-4eaf-9765-7351456dda07", "a@a.a", false, null, false, null, null, "A@A.A", "USERMODO", "AQAAAAIAAYagAAAAECLn9IYBIHDquWRLF42gDrV7VSIAi+QWUEQMc1IQtufNup4FhDVC+L9Z4X+HIM5NYw==", null, false, "16272194-a01d-4cbf-a893-305911be5fab", false, "UserModo" });
-========
-                values: new object[] { "11111111-1111-1111-1111-111111111111", 0, "50324e31-0ac4-4de7-8e54-331311763634", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAEMSc997iWeAF196vGEv/fcTisTOv0aQs3aY98r1rmoNuu8iZCCQvjifDgNSK1ACNFA==", null, false, "e6083103-fd4e-46c5-9970-acf037abf9ac", false, "UserAdmin" });
->>>>>>>> dev:PostHubServer/Migrations/20241211181104_migProjet.cs
+                values: new object[,]
+                {
+                    { "11111111-1111-1111-1111-111111111111", 0, "989e63e2-ee3f-44bf-93a3-25e5cf28360a", "a@a.a", true, null, false, null, null, "A@A.A", "USERADMIN", "AQAAAAIAAYagAAAAEDvBkWZpatfBB2ErL20w9HydiEf6L28Jadw37JNUWECcPcIAfkBBj55skmtVXCKe5g==", null, false, "ddf30649-3bd1-4380-80ae-5ac4e351428f", false, "UserAdmin" },
+                    { "22222222-2222-2222-2222-222222222222", 0, "ee11675c-acb2-42d5-8448-30a426e3b1c1", "m@m.m", false, null, false, null, null, "M@M.M", "USERMODO", "AQAAAAIAAYagAAAAENQJ4eJJ1y3tDgmWu/8iiiOGtpZFJPtHYFfuQu6OLJidOX4f/opwrwDHhbh9x8mu2w==", null, false, "4268223b-5530-4660-9b9d-42e6105b07da", false, "UserModo" }
+                });
 
             migrationBuilder.InsertData(
                 table: "AspNetUserRoles",
                 columns: new[] { "RoleId", "UserId" },
-<<<<<<<< HEAD:PostHubServer/Migrations/20241211184107_init.cs
-                values: new object[] { "2", "22222222-2222-2222-2222-222222222222" });
-========
-                values: new object[] { "1", "11111111-1111-1111-1111-111111111111" });
->>>>>>>> dev:PostHubServer/Migrations/20241211181104_migProjet.cs
+                values: new object[,]
+                {
+                    { "1", "11111111-1111-1111-1111-111111111111" },
+                    { "2", "22222222-2222-2222-2222-222222222222" }
+                });
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
