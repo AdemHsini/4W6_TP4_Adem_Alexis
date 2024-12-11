@@ -1,73 +1,73 @@
 {
-  "hash": "b9b83c53",
-  "configHash": "346f05fe",
+  "hash": "6c7263d0",
+  "configHash": "918cb60e",
   "lockfileHash": "615be010",
-  "browserHash": "66a28e9f",
+  "browserHash": "c4c77437",
   "optimized": {
     "@angular/common": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/common.mjs",
       "file": "@angular_common.js",
-      "fileHash": "89a6c54f",
+      "fileHash": "29837d9c",
       "needsInterop": false
     },
     "@angular/common/http": {
       "src": "../../../../../../node_modules/@angular/common/fesm2022/http.mjs",
       "file": "@angular_common_http.js",
-      "fileHash": "485c0b8c",
+      "fileHash": "a69601c7",
       "needsInterop": false
     },
     "@angular/common/locales/fr": {
       "src": "../../../../../../node_modules/@angular/common/locales/fr.mjs",
       "file": "@angular_common_locales_fr.js",
-      "fileHash": "ab576294",
+      "fileHash": "cd8c719e",
       "needsInterop": false
     },
     "@angular/core": {
       "src": "../../../../../../node_modules/@angular/core/fesm2022/core.mjs",
       "file": "@angular_core.js",
-      "fileHash": "77c0ca36",
+      "fileHash": "75f47548",
       "needsInterop": false
     },
     "@angular/forms": {
       "src": "../../../../../../node_modules/@angular/forms/fesm2022/forms.mjs",
       "file": "@angular_forms.js",
-      "fileHash": "751fee6e",
+      "fileHash": "10e5b9ab",
       "needsInterop": false
     },
     "@angular/platform-browser": {
       "src": "../../../../../../node_modules/@angular/platform-browser/fesm2022/platform-browser.mjs",
       "file": "@angular_platform-browser.js",
-      "fileHash": "521644e8",
+      "fileHash": "fb716347",
       "needsInterop": false
     },
     "@angular/router": {
       "src": "../../../../../../node_modules/@angular/router/fesm2022/router.mjs",
       "file": "@angular_router.js",
-      "fileHash": "12032140",
+      "fileHash": "254f1e87",
       "needsInterop": false
     },
     "@fortawesome/angular-fontawesome": {
       "src": "../../../../../../node_modules/@fortawesome/angular-fontawesome/fesm2022/angular-fontawesome.mjs",
       "file": "@fortawesome_angular-fontawesome.js",
-      "fileHash": "d66ee298",
+      "fileHash": "d8d5fca2",
       "needsInterop": false
     },
     "@fortawesome/free-solid-svg-icons": {
       "src": "../../../../../../node_modules/@fortawesome/free-solid-svg-icons/index.mjs",
       "file": "@fortawesome_free-solid-svg-icons.js",
-      "fileHash": "3656e72e",
+      "fileHash": "b38fb91e",
       "needsInterop": false
     },
     "@glidejs/glide": {
       "src": "../../../../../../node_modules/@glidejs/glide/dist/glide.esm.js",
       "file": "@glidejs_glide.js",
-      "fileHash": "e768f1fb",
+      "fileHash": "a0904b53",
       "needsInterop": false
     },
     "rxjs": {
       "src": "../../../../../../node_modules/rxjs/dist/esm5/index.js",
       "file": "rxjs.js",
-      "fileHash": "f10c7969",
+      "fileHash": "6f859dde",
       "needsInterop": false
     }
   },

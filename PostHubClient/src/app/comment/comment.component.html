@@ -60,9 +60,9 @@
         <button *ngIf="editToggle" (click)="editComment()">Modifier</button>
       </div>
     </div>
-  
+
   </div>
-  
+
   <!-- Boîte pour répondre au commentaire affiché dans ce composant -->
   <div *ngIf="replyToggle" id="commentBox">
     <input type="text" name="newComment" id="newComment" placeholder="Ajouter un commentaire" [(ngModel)]="newComment">
@@ -73,7 +73,7 @@
     <button (click)="displayInputFile = !displayInputFile"><fa-icon [icon]="faImage"></fa-icon></button>
     <button (click)="createComment()">Ajouter</button>
   </div>
-  
+
   <!-- Liste de sous-commentaires -->
   <div id="subComments" *ngIf="repliesToggle">
     <div class="comment" *ngFor="let c of comment!.subComments">

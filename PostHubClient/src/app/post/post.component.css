@@ -241,3 +241,10 @@
 .grid-item img{
     height: 200px;
 }
+
+.hidden {
+    display: none;
+    visibility: hidden;
+    height: 0;
+    overflow: hidden;
+}

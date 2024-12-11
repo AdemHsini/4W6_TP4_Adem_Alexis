@@ -11,37 +11,48 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './profile.component.css'
 })
 export class ProfileComponent {
-  userIsConnected : boolean = false;
+  userIsConnected: boolean = false;
 
   // Vous êtes obligés d'utiliser ces trois propriétés
-  oldPassword : string = "";
-  newPassword : string = "";
-  newPasswordConfirm : string = "";
+  oldPassword: string = "";
+  newPassword: string = "";
+  newPasswordConfirm: string = "";
 
-  username : string | null = null;
+  username: string | null = null;
   imageUrl: string = '';
 
-  @ViewChild("photo", {static : false}) myPicture ?: ElementRef;
+  @ViewChild("photo", { static: false }) myPicture?: ElementRef;
 
-  constructor(public userService : UserService) { }
+  constructor(public userService: UserService) { }
 
   ngOnInit() {
     this.userIsConnected = localStorage.getItem("token") != null;
     this.username = localStorage.getItem("username");
   }
 
-  async updateUser(){
+  async updateUser() {
 
     let formData = new FormData();
 
-    if(this.myPicture != null) {
+    if (this.myPicture != null) {
       let file = this.myPicture.nativeElement.files[0];
       formData.append("image", file);
     }
 
     if (this.username != null)
-    await this.userService.update(formData, this.username);
+      await this.userService.update(formData, this.username);
 
     window.location.reload()
+  }
+
+  async changePassword() {
+    if (this.newPassword != this.newPasswordConfirm) {
+      alert("Les nouveaux mots de passe ne correspondent pas.");
+      return;
+    }
+    if (this.username != null) {
+      await this.userService.changePassword(this.username, this.oldPassword, this.newPassword);
+      alert("Mot de passe changé avec succès.");
+    }
   }
 }
