@@ -1,4 +1,6 @@
-﻿using PostHubServer.Data;
+﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using PostHubServer.Data;
 using PostHubServer.Models;
 
 namespace PostHubServer.Services
@@ -166,6 +168,13 @@ namespace PostHubServer.Services
             await _context.SaveChangesAsync();
 
             return true; // Basculement du downvote réussi
+        }
+
+        public async Task<List<Comment>> getReportComments()
+        {
+            if (IsContextNull()) return null;
+
+            return await _context.Comments.Include(i => i.User).Where(c => c.Reported).ToListAsync();
         }
         private bool IsContextNull() => _context == null || _context.Comments == null;
     }

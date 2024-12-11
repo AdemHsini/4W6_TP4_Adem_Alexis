@@ -40,6 +40,7 @@ export class UserService {
     // Cela pourrait vous aider pour la partie admin / modérateur
     localStorage.setItem("token", x.token);
     localStorage.setItem("username", x.username);
+    localStorage.setItem("userRole", x.role);
   }
 
 

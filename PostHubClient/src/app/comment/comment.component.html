@@ -10,7 +10,7 @@
   
     <!-- Texte du commentaire et éventuellement images -->
     <div class="postContent">
-        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + username" alt="Avatar">
+        <img class="avatar" [src]="'https://localhost:7216/api/Users/GetUserPicture/' + comment.username" alt="Avatar">
         <div *ngIf="!editToggle">{{comment.text}}</div>
         <textarea *ngIf="editToggle" id="commentTextEdit" name="commentTextEdit" rows="3"
           [(ngModel)]="editedText">{{comment.text}}</textarea>

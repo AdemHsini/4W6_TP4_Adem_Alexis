@@ -316,6 +316,21 @@ namespace PostHubServer.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.InsertData(
+                table: "AspNetRoles",
+                columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
+                values: new object[] { "2", null, "moderator", "MODERATOR" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUsers",
+                columns: new[] { "Id", "AccessFailedCount", "ConcurrencyStamp", "Email", "EmailConfirmed", "FileName", "LockoutEnabled", "LockoutEnd", "MimeType", "NormalizedEmail", "NormalizedUserName", "PasswordHash", "PhoneNumber", "PhoneNumberConfirmed", "SecurityStamp", "TwoFactorEnabled", "UserName" },
+                values: new object[] { "22222222-2222-2222-2222-222222222222", 0, "3126b631-9439-4eaf-9765-7351456dda07", "a@a.a", false, null, false, null, null, "A@A.A", "USERMODO", "AQAAAAIAAYagAAAAECLn9IYBIHDquWRLF42gDrV7VSIAi+QWUEQMc1IQtufNup4FhDVC+L9Z4X+HIM5NYw==", null, false, "16272194-a01d-4cbf-a893-305911be5fab", false, "UserModo" });
+
+            migrationBuilder.InsertData(
+                table: "AspNetUserRoles",
+                columns: new[] { "RoleId", "UserId" },
+                values: new object[] { "2", "22222222-2222-2222-2222-222222222222" });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",

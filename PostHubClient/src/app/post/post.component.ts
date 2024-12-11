@@ -208,4 +208,11 @@ export class PostComponent {
 
     this.post.mainComment.picturesIds = await this.commentService.getPictureIds(this.post.mainComment.id);
   }
+
+  async reportComment() {
+    if (this.post == null || this.post.mainComment == undefined) return;
+    await this.commentService.reportComment(this.post.mainComment.id);
+    
+    alert("Commentaire signalé !");
+  }
 }

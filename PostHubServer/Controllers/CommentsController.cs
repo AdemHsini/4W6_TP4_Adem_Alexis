@@ -8,7 +8,6 @@ using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
-using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
 namespace PostHubServer.Controllers
@@ -174,7 +173,10 @@ namespace PostHubServer.Controllers
             Comment? comment = await _commentService.GetComment(commentId);
             if (comment == null) return NotFound();
 
-            if (user == null || comment.User != user) return Unauthorized();
+            if (user.Id != "22222222-2222-2222-2222-222222222222")
+            {
+                if (user == null || comment.User != user) return Unauthorized();
+            }
 
             // Cette boucle permet non-seulement de supprimer le commentaire lui-même, mais s'il possède
             // un commentaire parent qui a été soft-delete et qui n'a pas de sous-commentaires,
@@ -267,6 +269,16 @@ namespace PostHubServer.Controllers
             if (!voteToggleSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
 
             return Ok(new { Message = "Commentaire signaler." });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<List<Comment>>> GetReportedComments()
+        {
+            List<Comment>? comments = await _commentService.getReportComments();
+
+            if (comments == null) return BadRequest();
+
+            return Ok(comments);
         }
     }
 }

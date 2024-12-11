@@ -72,4 +72,11 @@ export class CommentService {
 
   }
 
+  async getReportedComments(): Promise<Comment[]> {
+
+    let x = await lastValueFrom(this.http.get<Comment[]>(domain + "api/Comments/GetReportedComments"));
+    console.log(x);
+    return x;
+
+  }
 }

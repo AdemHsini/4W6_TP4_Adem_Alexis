@@ -12,7 +12,7 @@ using PostHubServer.Data;
 namespace PostHubServer.Migrations
 {
     [DbContext(typeof(PostHubContext))]
-    [Migration("20241211060530_init")]
+    [Migration("20241211184107_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -98,6 +98,14 @@ namespace PostHubServer.Migrations
                         .HasFilter("[NormalizedName] IS NOT NULL");
 
                     b.ToTable("AspNetRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "2",
+                            Name = "moderator",
+                            NormalizedName = "MODERATOR"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -185,6 +193,13 @@ namespace PostHubServer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "22222222-2222-2222-2222-222222222222",
+                            RoleId = "2"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -379,6 +394,24 @@ namespace PostHubServer.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "22222222-2222-2222-2222-222222222222",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "3126b631-9439-4eaf-9765-7351456dda07",
+                            Email = "a@a.a",
+                            EmailConfirmed = false,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "A@A.A",
+                            NormalizedUserName = "USERMODO",
+                            PasswordHash = "AQAAAAIAAYagAAAAECLn9IYBIHDquWRLF42gDrV7VSIAi+QWUEQMc1IQtufNup4FhDVC+L9Z4X+HIM5NYw==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "16272194-a01d-4cbf-a893-305911be5fab",
+                            TwoFactorEnabled = false,
+                            UserName = "UserModo"
+                        });
                 });
 
             modelBuilder.Entity("CommentUser", b =>

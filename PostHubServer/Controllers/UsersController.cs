@@ -72,7 +72,8 @@ namespace PostHubServer.Controllers
                 {
                     token = new JwtSecurityTokenHandler().WriteToken(token),
                     validTo = token.ValidTo,
-                    username = user.UserName // Ceci sert déjà à afficher / cacher certains boutons côté Angular
+                    username = user.UserName,
+                    role = roles// Ceci sert déjà à afficher / cacher certains boutons côté Angular
                 });
             }
             else

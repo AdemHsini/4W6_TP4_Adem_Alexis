@@ -4,6 +4,7 @@ import { HubService } from '../services/hub.service';
 import { Router } from '@angular/router';
 import { Hub } from '../models/hub';
 import { FormsModule } from '@angular/forms';
+import { AppComponent } from '../app.component';
 
 @Component({
   selector: 'app-login',
@@ -17,7 +18,7 @@ export class LoginComponent {
   loginUsername : string = "";
   loginPassword : string = "";
 
-  constructor(public userService : UserService, public hubService : HubService, public router : Router) { }
+  constructor(public userService : UserService, public hubService : HubService, public router : Router, private appComponent: AppComponent) { }
 
   ngOnInit() {}
 
@@ -26,6 +27,8 @@ export class LoginComponent {
 
     let x : Hub[] = await this.hubService.getUserHubs();
     localStorage.setItem("myHubs", JSON.stringify(x));
+
+    this.appComponent.updateIsModo();
 
     this.router.navigate(["/postList", "index"]);
   }
