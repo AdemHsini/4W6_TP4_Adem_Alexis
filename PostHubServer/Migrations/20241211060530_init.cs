@@ -180,7 +180,8 @@ namespace PostHubServer.Migrations
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Date = table.Column<DateTime>(type: "datetime2", nullable: true),
                     ParentCommentId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    Reported = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {

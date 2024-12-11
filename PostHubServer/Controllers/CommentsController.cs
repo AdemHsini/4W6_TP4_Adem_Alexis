@@ -255,5 +255,18 @@ namespace PostHubServer.Controllers
 
             return Ok(new { Message = "Image supprimée." });
         }
+
+        [HttpPut("{commentId}")]
+        [Authorize]
+        public async Task<ActionResult> ReportComment(int commentId)
+        {
+            Comment? comment = await _commentService.GetComment(commentId);
+            if (comment == null || comment.User == null) return BadRequest();
+
+            bool voteToggleSuccess = await _commentService.reportComment(comment);
+            if (!voteToggleSuccess) return StatusCode(StatusCodes.Status500InternalServerError);
+
+            return Ok(new { Message = "Commentaire signaler." });
+        }
     }
 }

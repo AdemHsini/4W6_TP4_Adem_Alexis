@@ -12,7 +12,7 @@ using PostHubServer.Data;
 namespace PostHubServer.Migrations
 {
     [DbContext(typeof(PostHubContext))]
-    [Migration("20241127220141_init")]
+    [Migration("20241211060530_init")]
     partial class init
     {
         /// <inheritdoc />
@@ -219,6 +219,9 @@ namespace PostHubServer.Migrations
 
                     b.Property<int?>("ParentCommentId")
                         .HasColumnType("int");
+
+                    b.Property<bool>("Reported")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Text")
                         .IsRequired()
