@@ -145,6 +145,7 @@ export class CommentComponent {
       this.comment.text = "Commentaire supprimé.";
       this.comment.picturesIds = [];
       this.isAuthor = false;
+      window.location.reload();
     }
     // Changements ... visuels ... pour le hard-delete
     else {
@@ -190,7 +191,7 @@ export class CommentComponent {
     }
   }
 
-  async deletePicture(pictureId : number) {
+  async deletePicture(pictureId: number) {
     if (this.comment == null || this.editedText == undefined) return;
     await this.commentService.deleteCommentPicture(pictureId);
 

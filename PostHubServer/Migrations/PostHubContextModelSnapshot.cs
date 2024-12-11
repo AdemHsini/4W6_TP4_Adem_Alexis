@@ -99,6 +99,12 @@ namespace PostHubServer.Migrations
                     b.HasData(
                         new
                         {
+                            Id = "1",
+                            Name = "admin",
+                            NormalizedName = "ADMIN"
+                        },
+                        new
+                        {
                             Id = "2",
                             Name = "moderator",
                             NormalizedName = "MODERATOR"
@@ -190,6 +196,14 @@ namespace PostHubServer.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "11111111-1111-1111-1111-111111111111",
+                            RoleId = "1"
+                        });
+                });
 
                     b.HasData(
                         new
@@ -408,6 +422,24 @@ namespace PostHubServer.Migrations
                             SecurityStamp = "16272194-a01d-4cbf-a893-305911be5fab",
                             TwoFactorEnabled = false,
                             UserName = "UserModo"
+                        });
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "11111111-1111-1111-1111-111111111111",
+                            AccessFailedCount = 0,
+                            ConcurrencyStamp = "50324e31-0ac4-4de7-8e54-331311763634",
+                            Email = "a@a.a",
+                            EmailConfirmed = true,
+                            LockoutEnabled = false,
+                            NormalizedEmail = "A@A.A",
+                            NormalizedUserName = "USERADMIN",
+                            PasswordHash = "AQAAAAIAAYagAAAAEMSc997iWeAF196vGEv/fcTisTOv0aQs3aY98r1rmoNuu8iZCCQvjifDgNSK1ACNFA==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "e6083103-fd4e-46c5-9970-acf037abf9ac",
+                            TwoFactorEnabled = false,
+                            UserName = "UserAdmin"
                         });
                 });
 

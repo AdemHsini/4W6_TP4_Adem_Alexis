@@ -12,6 +12,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class ProfileComponent {
   userIsConnected: boolean = false;
+  userRole: string | null = null;
 
   // Vous êtes obligés d'utiliser ces trois propriétés
   oldPassword: string = "";
@@ -28,6 +29,15 @@ export class ProfileComponent {
   ngOnInit() {
     this.userIsConnected = localStorage.getItem("token") != null;
     this.username = localStorage.getItem("username");
+    this.getUserRole();
+  }
+
+  async getUserRole() {
+    try {
+      this.userRole = await this.userService.getUserRole();
+    } catch (error) {
+      console.error("Erreur lors de la récupération du rôle de l'utilisateur.");
+    }
   }
 
   async updateUser() {
@@ -55,5 +65,19 @@ export class ProfileComponent {
       alert("Mot de passe changé avec succès.");
     }
     window.location.reload()
+  }
+
+  async addModerator(username: string) {
+    if (username) {
+      try {
+        await this.userService.addModerator(username);
+        alert("Modérateur ajouté avec succès.");
+      } catch (error) {
+        alert("Erreur lors de l'ajout du modérateur.");
+      }
+    } else {
+      alert("Veuillez entrer un nom d'utilisateur.");
+    }
+    window.location.reload();
   }
 }
